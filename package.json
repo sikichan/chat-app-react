@@ -5,7 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "server": "nodemon backend/server.js"
+    "server": "nodemon backend/server.js",
+    "client-install": "cd frontend && npm install",
+    "client": "cd frontend && npm run dev"
   },
   "keywords": [],
   "author": "",
