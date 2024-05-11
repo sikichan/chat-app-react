@@ -1,8 +1,11 @@
-import UserForm from '../components/UserForm.tsx';
-import React, {useState} from 'react';
-import {LoginUser} from '../types.ts';
+import UserForm from '@/components/UserForm.tsx'
+import React, {useState} from 'react'
+import {LoginUser} from '@/types.ts'
+import useLogin from '@/hooks/useLogin.ts'
+import toast from 'react-hot-toast';
 
 const Login = () => {
+  const {loading, logIn} = useLogin()
   const [user, setUser] = useState<LoginUser>({
     username: '',
     password: ''
@@ -13,10 +16,34 @@ const Login = () => {
       [event.target.name]: event.target.value
     })
   }
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    console.log(user)
+  const handleValidate = (): string => {
+    if (!user.username.trim()) {
+      return 'Username is required'
+    }
+    if (!user.password.trim()) {
+      return 'Password is required'
+    }
+    if (user.password.length < 6) {
+      return 'Password must be at least 6 characters'
+    }
+    return ''
   }
-  return <UserForm title={`Login`} user={user} handleChange={handleChange} handleSubmit={handleSubmit}/>
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const msg = handleValidate()
+    if (msg) {
+      return toast.error(msg)
+    }
+    await logIn(user)
+  }
+  return (
+    <UserForm
+      loading={loading}
+      title={`Login`}
+      user={user}
+      handleChange={handleChange}
+      handleSubmit={handleSubmit}
+    />
+  )
 }
-export default Login;
+export default Login

@@ -1,9 +1,16 @@
-export type LoginUser = {
+export interface LoginUser {
   username: string
   password: string
 }
-export type SignupUser = LoginUser & {
+
+export interface SignupUser extends LoginUser {
   fullName: string
   confirmedPassword: string,
   gender: 'boy' | 'girl'
+}
+
+export interface FetchProps {
+  url: string
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  body?: object
 }
