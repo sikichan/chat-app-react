@@ -15,22 +15,22 @@ export const sendMessage = async (req, res) => {
 				participants: [senderId, receiverId]
 			})
 		}
-		conversation.messages.push(newMessage._id)
 		const newMessage = new Message({
 			senderId,
 			receiverId,
 			message,
 			messageType
 		})
+
 		if (newMessage) {
-			conversation.messages.push(newMessage)
+			conversation.messages.push(newMessage._id)
 		}
 
 		// todo: socket
-		await Promise.all(conversation.save(), newMessage.save())
+		await Promise.all([conversation.save(), newMessage.save()])
 		res.status(201).json(newMessage)
 	} catch (e) {
-		console.log('Error in MessageController.sendMessage: ', e.messages)
+		console.log('Error in MessageController.sendMessage: ', e)
 		res.status(500).json('Internal server error')
 	}
 }
@@ -47,7 +47,7 @@ export const getMessages = async (req, res) => {
 		}
 		res.status(200).json(conversation.messages)
 	} catch (e) {
-		console.log('Error in MessageController.getMessages: ', e.messages)
+		console.log('Error in MessageController.getMessages: ', e)
 		res.status(500).json('Internal server error')
 	}
 }

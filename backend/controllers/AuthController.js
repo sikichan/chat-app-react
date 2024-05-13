@@ -55,13 +55,16 @@ export const login = async (req, res) => {
 				avatar: user.avatar
 			})
 		}
-	} catch (err) {
-		res.status(500).json({ error: err.message })
+	} catch (error) {
+		res.status(500).json({ error })
 	}
 }
 export const logout = async (req, res) => {
+	// await new Promise(resolve => setTimeout(resolve, 3000))
 	try {
-		res.cookies('token', '', { maxAge: 0 })
+		res.cookie('token', '', {
+			maxAge: 0
+		})
 		res.status(200).json({ message: 'Logged out successfully' })
 	} catch (e) {
 		res.status(500).json({ error: 'Internal Server Error' })

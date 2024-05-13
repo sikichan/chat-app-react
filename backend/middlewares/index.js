@@ -4,6 +4,7 @@ import User from '../models/UserModel.js'
 export const isLoggedIn = async (req, res, next) => {
 	try {
 		const token = req.cookies.token
+		console.log('token', token)
 		if (!token) {
 			return res.status(401).json({ error: 'Authentication token required' })
 		}
@@ -18,7 +19,7 @@ export const isLoggedIn = async (req, res, next) => {
 		req.user = user // current logged user
 		next()
 	} catch (e) {
-		console.error(`Error in Logged Middleware :${e.message}`)
+		console.error(`Error in Logged Middleware :`, e)
 		res.status(500).json({ error: 'Internal Server Error' })
 	}
 }
