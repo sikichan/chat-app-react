@@ -1,5 +1,5 @@
-import Sidebar from '../components/Sidebar.tsx';
-import MessageContainer from '../components/MessageContainer.tsx';
+import Sidebar from '../components/Sidebar/Sidebar.tsx';
+import MessageContainer from '../components/Message/MessageContainer.tsx';
 
 const Home = () => {
   return (
@@ -20,15 +20,15 @@ const Home = () => {
     // </div>
     
     <div
-      className="p-6 flex
-      md:w-2/3 md:h-4/5
-      sm:w-3/4 sm:h-3/4
+      className="p-4 flex
+      md:w-9/10 md:h-9/10
+      sm:w-5/6 sm:h-5/6
       rounded-lg overflow-lg overflow-hidden bg-gray-400
       bg-clip-padding backdrop-filter
       backdrop-blur-lg bg-opacity-0"
     >
       <Sidebar/>
-      <MessageContainer message={''}/>
+      <MessageContainer/>
     </div>
   )
 }

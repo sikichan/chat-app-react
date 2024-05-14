@@ -35,6 +35,7 @@ const UserForm = (props: UserFormProps) => {
                   className="w-full input input-bordered h-10"
                   placeholder="Enter your Chinese name"
                   name="fullName"
+                  maxLength={16}
                   value={(user as SignupUser).fullName}
                   onChange={handleChange}
                 />
@@ -52,6 +53,7 @@ const UserForm = (props: UserFormProps) => {
               className="w-full input input-bordered h-10"
               placeholder="Enter your username"
               name="username"
+              maxLength={16}
               value={user.username}
               onChange={handleChange}
             />
@@ -72,6 +74,7 @@ const UserForm = (props: UserFormProps) => {
               className="w-full input input-bordered h-10"
               name="password"
               value={user.password}
+              maxLength={16}
               placeholder="Enter your password"
               onChange={handleChange}
             />
@@ -88,6 +91,7 @@ const UserForm = (props: UserFormProps) => {
                   type="password"
                   className="w-full input input-bordered h-10"
                   name="confirmedPassword"
+                  maxLength={16}
                   value={(user as SignupUser).confirmedPassword}
                   placeholder="Enter your confirmed password"
                   onChange={handleChange}

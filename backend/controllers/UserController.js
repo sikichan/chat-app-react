@@ -2,6 +2,7 @@ import User from '../models/UserModel.js'
 
 export const getUsersForSidebar = async (req, res) => {
 	try {
+		// await new Promise(resolve => setTimeout(resolve, 2000))
 		const currentUser = req.user._id
 		const users = await User.find({
 			_id: { $ne: currentUser }

@@ -1,12 +1,14 @@
 import useLogout from '@/hooks/useLogout.ts';
+import useAuthContext from '@/hooks/useAuthContext.ts';
 
 const Logout = () => {
   const {loading, logout} = useLogout()
+  const {authUser} = useAuthContext()
   const handleLogout = async () => {
     await logout()
   }
-  return <div className="fixed bottom-0">
-    <button disabled={loading} className="btn btn-ghost" onClick={handleLogout}>
+  return <div className="rounded w-full mt-1 flex gap-2 items-center justify-between">
+    <button disabled={loading} className="btn btn-ghost py-0 px-1" onClick={handleLogout}>
       
       {
         loading ? <span className="loading loading-spinner"/> : (
@@ -18,6 +20,17 @@ const Logout = () => {
         )
       }
     </button>
+    <div className="text-light text-[14px] flex items-center">
+      <div className="avatar online">
+        <div className="w-8 rounded-full">
+          <img
+            src={authUser?.avatar}
+            alt="user avatar"
+          />
+        </div>
+      </div>
+      <span className="ml-1.5 hover:text-yellow">{authUser?.fullName}</span>
+    </div>
   </div>
 }
 export default Logout;

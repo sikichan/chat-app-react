@@ -1,10 +1,11 @@
-import React, { createContext, useState, PropsWithChildren } from "react"
+import React, {createContext, useState, PropsWithChildren} from 'react'
 
 interface AuthUserType {
   _id: string
   username: string
   fullName: string
-  gender: "boy" | "girl"
+  gender: 'boy' | 'girl'
+  avatar: string
 }
 
 interface AuthContextType {
@@ -14,17 +15,18 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType>({
   authUser: null,
-  setAuthUser: () => {},
+  setAuthUser: () => {
+  }
 })
 
-const AuthProvider = ({ children }: PropsWithChildren) => {
+const AuthProvider = ({children}: PropsWithChildren) => {
   const [authUser, setAuthUser] = useState<AuthUserType | null>(() => {
-    const storedUser = localStorage.getItem("chat-user")
+    const storedUser = localStorage.getItem('chat-user')
     return storedUser ? JSON.parse(storedUser) : null
   })
-
+  
   return (
-    <AuthContext.Provider value={{ authUser, setAuthUser }}>
+    <AuthContext.Provider value={{authUser, setAuthUser}}>
       {children}
     </AuthContext.Provider>
   )

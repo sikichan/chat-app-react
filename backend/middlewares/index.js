@@ -4,7 +4,6 @@ import User from '../models/UserModel.js'
 export const isLoggedIn = async (req, res, next) => {
 	try {
 		const token = req.cookies.token
-		console.log('token', token)
 		if (!token) {
 			return res.status(401).json({ error: 'Authentication token required' })
 		}

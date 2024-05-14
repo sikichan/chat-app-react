@@ -3,9 +3,9 @@ import Conversations from './Conversations.tsx';
 import Logout from './Logout.tsx';
 
 const Sidebar = () => {
-  return <div className="p-2 flex flex-col">
+  return <div className="pt-1 flex flex-col border-r border-gray-400 pr-4">
     <SearchInput/>
-    <div className="divider px-3"></div>
+    <div className="divider"></div>
     <Conversations/>
     <Logout/>
   </div>

@@ -1,6 +1,6 @@
 import {FetchProps} from './types.ts'
 
-const Fetch = async ({url, body = {}, method}: FetchProps) => {
+const Fetch = async ({url, method, body = method === 'GET' ? undefined : {}}: FetchProps) => {
   console.log(url)
   
   const res = await fetch(url, {
@@ -12,7 +12,7 @@ const Fetch = async ({url, body = {}, method}: FetchProps) => {
   })
   return res.json()
 }
-const AuthedFetch = async ({url, body = {}, method}: FetchProps) => {
+const AuthedFetch = async ({url, method, body = method === 'GET' ? undefined : {}}: FetchProps) => {
   const res = await fetch(url, {
     method,
     body: JSON.stringify(body),
