@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,11 +6,12 @@
 
 :root {
   font-family: "Reddit Mono", sans-serif;
-  --var-yellow: #FFC470;
+  --var-yellow: #ffc470;
 }
 
 body {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("@/assets/bg.png");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+    url("@/assets/bg.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
@@ -23,4 +24,16 @@ body {
   color: black;
 }
 
-
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background-color: #777;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #000;
+}

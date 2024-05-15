@@ -24,7 +24,7 @@ const Message = (message: MessageModel) => {
           <img alt="Tailwind CSS chat bubble component" src={avatar}/>
         </div>
       </div>
-      <div className="chat-header text-gray-300">
+      <div className="chat-header text-gray-600">
         {fromMe ? 'me' : selectedConversation?.fullName}
       </div>
       <div
@@ -32,7 +32,7 @@ const Message = (message: MessageModel) => {
       >
         {message.message}
       </div>
-      <div className="chat-footer opacity-50 text-xs text-gray-700 flex gap-1 items-center">
+      <div className="chat-footer opacity-50 text-xs text-gray-300 flex gap-1 items-center">
         {formattedTime}
       </div>
     </div>

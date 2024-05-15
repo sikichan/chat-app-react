@@ -1,25 +1,37 @@
-import {IoSearch} from 'react-icons/io5';
-import React, {useState} from 'react';
+import {MdOutlineClear} from 'react-icons/md';
+import React from 'react';
 
-const SearchInput = () => {
-  const [value, setValue] = useState('')
+type Props = {
+  value: string
+  setValue: (value: string) => void
+}
+const SearchInput = (props: Props) => {
+  const {value, setValue} = props
+  
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // const result = conversations.find(item => item.fullName.toLowerCase().includes(value.toLowerCase()))
-    // setSelectedConversation(result)
+  }
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value)
+  }
+  const handleClear = () => {
+    setValue('')
   }
   return (
     <form className="flex items-center gap-2" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Search..."
-        value={value}
-        onChange={e => setValue(e.target.value)}
-        className="input input-bordered rounded-full"
-      />
-      <button type="submit" className="btn btn-circle">
-        <IoSearch className="w-5 h-5 outline-none"/>
-      </button>
+      <label className="input input-bordered flex items-center gap-2">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={value}
+          onChange={handleChange}
+          className="grow"
+        />
+        <MdOutlineClear onClick={handleClear}/>
+      </label>
+      {/*<button type="submit" className="btn btn-circle">*/}
+      {/*  <IoSearch className="w-5 h-5 outline-none"/>*/}
+      {/*</button>*/}
     
     </form>
   )
