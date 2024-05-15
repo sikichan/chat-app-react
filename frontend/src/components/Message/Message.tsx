@@ -30,7 +30,8 @@ const Message = (message: MessageModel) => {
       <div
         className={`chat-bubble text-white ${bubbleBgColor} ${shakeClass} pb-2`}
       >
-        {message.message}
+        {(message.message) as string}
+        {/*  todo: implement more messageType*/}
       </div>
       <div className="chat-footer opacity-50 text-xs text-gray-300 flex gap-1 items-center">
         {formattedTime}

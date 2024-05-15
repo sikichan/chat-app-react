@@ -1,5 +1,6 @@
 import {create} from 'zustand'
 import {MessageModel, UserModel} from '@/types.ts';
+import {devtools} from 'zustand/middleware'
 
 type State = {
   selectedConversation: UserModel | null
@@ -10,10 +11,13 @@ type Action = {
   setMessages: (message: MessageModel[]) => void
 }
 
-const useConversation = create<State & Action>((set) => ({
-  selectedConversation: null,
-  setSelectedConversation: (selectedConversation) => set({selectedConversation}),
-  messages: [],
-  setMessages: (messages) => set({messages})
-}))
+const useConversation = create<State & Action>()(
+  devtools((set) => ({
+    selectedConversation: null,
+    setSelectedConversation: (selectedConversation) => set({selectedConversation}),
+    messages: [],
+    setMessages: (messages) => set({messages})
+  }))
+)
+
 export default useConversation

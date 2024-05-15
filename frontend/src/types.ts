@@ -5,8 +5,8 @@ export interface LoginUser {
 
 export interface SignupUser extends LoginUser {
   fullName: string
-  confirmedPassword: string,
-  gender: 'boy' | 'girl',
+  confirmedPassword: string
+  gender: 'boy' | 'girl'
 }
 
 export interface FetchProps {
@@ -19,16 +19,24 @@ export type MessageModel = {
   _id: string
   senderId: string
   receiverId: string
-  message: string
-  messageType: string
+  message: object | string
+  messageType: MessageType
   shouldShake: boolean | undefined
   createdAt: Date | string | number
 }
 
 export type UserModel = {
-  _id: string,
+  _id: string
   fullName: string
-  username: string,
+  username: string
   avatar: string
   gender: 'boy' | 'girl'
+}
+
+export enum MessageType {
+  'text' = 'text',
+  'image' = 'image',
+  'video' = 'video',
+  'audio' = 'audio',
+  'file' = 'file',
 }

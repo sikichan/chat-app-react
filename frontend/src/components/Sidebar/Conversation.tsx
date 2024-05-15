@@ -1,6 +1,7 @@
 import {UserModel} from '@/types.ts';
 import reactLogo from '@/assets/react.svg'
 import useConversation from '@/zustand/useConversation.ts';
+import useSocketContext from '@/hooks/useSocketContext.ts';
 
 type Props = {
   conversation: UserModel,
@@ -9,9 +10,11 @@ type Props = {
 const Conversation = ({conversation, lastIndex}: Props) => {
   const {fullName, avatar, gender, _id: receiverId} = conversation
   const {selectedConversation, setSelectedConversation} = useConversation()
+  const {onlineUsers} = useSocketContext()
   const handleClick = () => {
     setSelectedConversation(conversation)
   }
+  const isOnline = onlineUsers.includes(conversation._id)
   return (
     <>
       <div
@@ -20,7 +23,7 @@ const Conversation = ({conversation, lastIndex}: Props) => {
             .concat(receiverId === selectedConversation?._id ? 'selected-to-chat' : '')
         }
         onClick={handleClick}>
-        <div className="avatar online">
+        <div className={`avatar ${isOnline ? 'online' : ''}`}>
           {
             <div className="w-12 rounded-full">
               <img

@@ -3,16 +3,9 @@ import {Fetch} from '@/fetch.ts';
 import toast from 'react-hot-toast';
 import {UserModel} from '@/types.ts';
 
-const useGetConversations = (searchKeyword: string) => {
+const useGetConversations = ({needFetch = true, searchKeyword = ''}) => {
   const [loading, setLoading] = useState(true);
   const [conversations, setConversations] = useState<UserModel[]>([]);
-  // const search = (fullName: string) => {
-  //   console.log(fullName, 'search')
-  //   setLoading(true);
-  //   const results = conversations.filter(item => item.fullName.toLowerCase().includes(fullName.toLowerCase()));
-  //   console.log(results);
-  //   setLoading(false);
-  // }
   const fetchConversations = async () => {
     try {
       setLoading(true)
@@ -32,10 +25,10 @@ const useGetConversations = (searchKeyword: string) => {
     }
   }
   useEffect(() => {
-    if (searchKeyword?.trim() === '') fetchConversations()
-  }, [searchKeyword]);
+    if (searchKeyword?.trim() === '' && needFetch) fetchConversations()
+  }, []);
   
-  const filteredConversations = searchKeyword
+  const filteredConversations = searchKeyword?.trim() !== ''
     ? conversations.filter((conversation) =>
       conversation.fullName.toLowerCase().includes(searchKeyword.toLowerCase())
     )
@@ -43,7 +36,8 @@ const useGetConversations = (searchKeyword: string) => {
   
   return {
     loading,
-    conversations: filteredConversations
+    conversations: filteredConversations,
+    setConversations
   }
 }
 export default useGetConversations;
