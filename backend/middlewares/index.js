@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 import User from '../models/UserModel.js'
 
 export const isLoggedIn = async (req, res, next) => {
+	keepAlive(req, res)
 	try {
 		const token = req.cookies.token
 		if (!token) {
@@ -21,4 +22,8 @@ export const isLoggedIn = async (req, res, next) => {
 		console.error(`Error in Logged Middleware :`, e)
 		res.status(500).json({ error: 'Internal Server Error' })
 	}
+}
+
+const keepAlive = (req, res) => {
+	res.setHeader('Connection', 'keep-alive')
 }
