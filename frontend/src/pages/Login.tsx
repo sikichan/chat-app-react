@@ -1,19 +1,19 @@
 import UserForm from '@/components/UserForm.tsx'
-import React, {useState} from 'react'
-import {LoginUser} from '@/types.ts'
+import React, { useState } from 'react'
+import { LoginUser } from '@/types.ts'
 import useLogin from '@/hooks/useLogin.ts'
-import toast from 'react-hot-toast';
+import toast from 'react-hot-toast'
 
 const Login = () => {
-  const {loading, logIn} = useLogin()
+  const { loading, logIn } = useLogin()
   const [user, setUser] = useState<LoginUser>({
     username: '',
-    password: ''
+    password: '',
   })
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUser({
       ...user,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     })
   }
   const handleValidate = (): string => {

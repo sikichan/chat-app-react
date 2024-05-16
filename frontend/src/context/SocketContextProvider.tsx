@@ -2,40 +2,38 @@ import React, {
   createContext,
   PropsWithChildren,
   useEffect,
-  useState
+  useState,
 } from 'react'
-import {Socket, io} from 'socket.io-client'
+import { Socket, io } from 'socket.io-client'
 import useAuthContext from '@/hooks/useAuthContext.ts'
 
 interface SocketContextType {
   socket: Socket | null
   setSocket: React.Dispatch<React.SetStateAction<Socket | null>>
-  onlineUsers: string[]
+  onlineUsers: string[] | undefined
   setOnlineUsers: React.Dispatch<React.SetStateAction<string[]>>
 }
 
 export const SocketContext = createContext<SocketContextType>({
   socket: null,
-  setSocket: () => {
-  },
+  setSocket: () => {},
   onlineUsers: [],
-  setOnlineUsers: () => {
-  }
+  setOnlineUsers: () => {},
 })
 
-const SocketProvider = ({children}: PropsWithChildren) => {
+const SocketProvider = ({ children }: PropsWithChildren) => {
   const [socket, setSocket] = useState<Socket | null>(null)
   const [onlineUsers, setOnlineUsers] = useState<string[]>([])
-  const {authUser} = useAuthContext()
+  const { authUser } = useAuthContext()
   useEffect(() => {
     if (authUser) {
       const socket = io(import.meta.env.VITE_SERVER_URL, {
         query: {
-          userId: authUser._id
-        }
+          userId: authUser._id,
+        },
       })
       setSocket(socket)
-      
+
       socket.on('online-users', (onlineUsers: string[]) => {
         setOnlineUsers(onlineUsers)
       })
@@ -53,7 +51,7 @@ const SocketProvider = ({children}: PropsWithChildren) => {
   }, [authUser])
   return (
     <SocketContext.Provider
-      value={{socket, setSocket, onlineUsers, setOnlineUsers}}
+      value={{ socket, setSocket, onlineUsers, setOnlineUsers }}
     >
       {children}
     </SocketContext.Provider>

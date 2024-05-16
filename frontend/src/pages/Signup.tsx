@@ -1,8 +1,8 @@
 import UserForm from '../components/UserForm.tsx'
-import React, {useState} from 'react'
-import {SignupUser} from '../types.ts'
-import useSignup from '@/hooks/useSignup.ts';
-import toast from 'react-hot-toast';
+import React, { useState } from 'react'
+import { SignupUser } from '../types.ts'
+import useSignup from '@/hooks/useSignup.ts'
+import toast from 'react-hot-toast'
 
 const Signup = () => {
   const [user, setUser] = useState<SignupUser>({
@@ -10,19 +10,19 @@ const Signup = () => {
     password: '',
     fullName: '',
     confirmedPassword: '',
-    gender: 'girl'
+    gender: 'girl',
   })
-  const {loading, signUp} = useSignup()
+  const { loading, signUp } = useSignup()
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUser({
       ...user,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     })
   }
   const handleGender = (gender: 'boy' | 'girl') => {
     setUser({
       ...user,
-      gender
+      gender,
     })
   }
   const handleValidate = (): string => {

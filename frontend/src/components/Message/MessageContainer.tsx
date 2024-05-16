@@ -4,9 +4,16 @@ import Messages from './Messages.tsx'
 import MessageInput from './MessageInput.tsx'
 import useConversation from '@/zustand/useConversation.ts'
 import { useEffect } from 'react'
+import useSocketContext from '@/hooks/useSocketContext.ts'
 
 const MessageContainer = () => {
   const { selectedConversation, setSelectedConversation } = useConversation()
+  const { onlineUsers } = useSocketContext()
+  const isOnline =
+    onlineUsers && selectedConversation
+      ? onlineUsers.includes(selectedConversation._id)
+      : false
+
   useEffect(() => {
     return () => setSelectedConversation(null)
   }, [setSelectedConversation])
@@ -16,9 +23,17 @@ const MessageContainer = () => {
         <NoChatSelected />
       ) : (
         <>
-          <div className='bg-gray-500 px-4 py-2 mb-2 rounded'>
-            <span className='label-text text-gray-300'>Chat to:</span>{' '}
-            <span className='text-yellow font-bold'>
+          <div className='bg-gray-500 px-4 py-2 mb-2 rounded flex items-center gap-2'>
+            {/*<span className="label-text text-yellow">CHAT TO:</span>{' '}*/}
+            <div className={'avatar ' + (isOnline ? 'online' : '')}>
+              <div className='w-10 rounded'>
+                <img
+                  alt='Tailwind CSS chat bubble component'
+                  src={selectedConversation.avatar}
+                />
+              </div>
+            </div>
+            <span className='text-yellow font-bold flex-1'>
               {selectedConversation.fullName}
             </span>
           </div>

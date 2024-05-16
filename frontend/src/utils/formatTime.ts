@@ -1,7 +1,6 @@
 import moment from 'moment'
 
 const subtractTime = (createdAt: number | string | Date) => {
-  // return moment(createdAt).subtract(0, 'days').calendar()
   return moment(createdAt).fromNow()
 }
 
