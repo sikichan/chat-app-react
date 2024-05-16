@@ -39,7 +39,6 @@ export const sendMessage = async (req, res) => {
 			io.to(senderSocketId).emit('new-message', newMessage)
 		}
 
-
 		res.status(201).json(newMessage)
 	} catch (e) {
 		console.log('Error in MessageController.sendMessage: ', e)
@@ -60,6 +59,36 @@ export const getMessages = async (req, res) => {
 		res.status(200).json(conversation.messages)
 	} catch (e) {
 		console.log('Error in MessageController.getMessages: ', e)
+		res.status(500).json('Internal server error')
+	}
+}
+
+export const withdrawMessage = async (req, res) => {
+	try {
+		const { id } = req.params
+		const { receiverId } = req.body
+		const senderId = req.user._id.toString()
+		const message = await Message.findById(id)
+		if (message.senderId.toString() !== senderId) {
+			return res.status(400).json({ error: 'permission denied' })
+		}
+		const twoMinutesAgo = new Date().getTime() - 2 * 60 * 1000
+		let createdAt = new Date(message.createdAt).getTime()
+		if (createdAt >= twoMinutesAgo && createdAt <= new Date().getTime()) {
+			const conversation = await Conversation.findOne({
+				participants: { $all: [senderId, receiverId] }
+			})
+			await Promise.all([
+				Conversation.findByIdAndUpdate(conversation._id, {
+					$pull: { messages: message._id }
+				}),
+				Message.deleteOne({ _id: id })
+			])
+			res.status(200).json({ id, message: '消息撤回成功' })
+		} else {
+			res.status(400).json({ error: '消息不在两分钟内，撤回失败' })
+		}
+	} catch (e) {
 		res.status(500).json('Internal server error')
 	}
 }
