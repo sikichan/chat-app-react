@@ -10,13 +10,21 @@
 }
 
 body {
+  height: 100vh;
+  width: 100vw;
+}
+
+.Home {
   background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-    url('@/assets/bg.png');
+  url('@/assets/background.JPG');
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
-  height: 100vh;
+}
+
+.ImageCropper {
+  background-color: #424769;
 }
 
 .selected-to-chat {
@@ -53,20 +61,25 @@ body {
   90% {
     transform: translate3d(-1px, 0, 0);
   }
-
+  
   20%,
   80% {
     transform: translate3d(2px, 0, 0);
   }
-
+  
   30%,
   50%,
   70% {
     transform: translate3d(-4px, 0, 0);
   }
-
+  
   40%,
   60% {
     transform: translate3d(4px, 0, 0);
   }
+}
+
+.reactEasyCrop_CropArea {
+  border-radius: 50%;
+  border: 2px dashed ghostwhite !important;
 }

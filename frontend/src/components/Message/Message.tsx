@@ -1,8 +1,9 @@
-import useAuthContext from '@/hooks/useAuthContext'
-import {subtractTime} from '@/utils/formatTime.ts'
-import useConversation from '@/zustand/useConversation'
-import {MessageModel} from '@/types.ts'
-import React, {useRef, useEffect} from 'react'
+import useAuthContext from "@/hooks/useAuthContext"
+import { subtractTime } from "@/utils/formatTime.ts"
+import useConversation from "@/zustand/useConversation"
+import { MessageModel } from "@/types.ts"
+import React, { useEffect, useRef } from "react"
+import useSocketContext from "@/hooks/useSocketContext.ts"
 
 type Props = {
   message: MessageModel
@@ -12,30 +13,36 @@ type Props = {
   setActiveMessageId: (id: string) => void
 }
 const Message = ({
-                   message,
-                   isSingleChat,
-                   onWithdraw,
-                   activeMessageId,
-                   setActiveMessageId
-                 }: Props) => {
-  const {authUser} = useAuthContext()
-  const {selectedConversation} = useConversation()
+  message,
+  isSingleChat = true,
+  onWithdraw,
+  activeMessageId,
+  setActiveMessageId,
+}: Props) => {
+  const { authUser } = useAuthContext()
+  const { selectedConversation } = useConversation()
   const fromMe = message.senderId === authUser?._id
-  const chatClassName = fromMe ? 'chat-end' : 'chat-start'
+  const chatClassName = fromMe ? "chat-end" : "chat-start"
   const avatar = fromMe ? authUser?.avatar : selectedConversation?.avatar
-  const bubbleBgColor = fromMe ? 'bg-green' : ''
-  const shakeClass = message.shouldShake ? 'shake' : ''
+  const bubbleBgColor = fromMe ? "bg-green" : ""
+  const shakeClass = message.shouldShake ? "shake" : ""
   const msgRef = useRef<HTMLDivElement | null>(null)
   const withdrawRef = useRef<HTMLDivElement | null>(null)
   const createdAt = new Date(message.createdAt).getTime()
   const currentTime = new Date().getTime()
   const canWithdraw =
     createdAt >= currentTime - 2 * 60 * 1000 && createdAt <= currentTime
-  
+
+  const { onlineUsers } = useSocketContext()
+  const isOnline = fromMe
+    ? "online"
+    : onlineUsers && selectedConversation
+      ? onlineUsers.includes(selectedConversation._id)
+      : false
   const formattedTime = subtractTime(message.createdAt)
   const handleWithdraw = () => {
     onWithdraw(message._id, selectedConversation!._id)
-    setActiveMessageId('')
+    setActiveMessageId("")
   }
   const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
@@ -46,34 +53,32 @@ const Message = ({
       withdrawRef.current &&
       !withdrawRef.current.contains(event.target as Node)
     ) {
-      setActiveMessageId('')
+      setActiveMessageId("")
     }
   }
-  
+
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside)
+    document.addEventListener("click", handleClickOutside)
     return () => {
-      document.removeEventListener('click', handleClickOutside)
+      document.removeEventListener("click", handleClickOutside)
     }
   }, [])
   return (
     <div className="relative">
       <div className={`chat ${chatClassName}`}>
-        {!isSingleChat ? (
-          <div className="chat-image avatar online">
-            <div className="w-10 rounded-full">
-              <img alt="Tailwind CSS chat bubble component" src={avatar}/>
-            </div>
+        <div className={`chat-image avatar ${isOnline ? "online" : ""}`}>
+          <div className="w-10 rounded-full">
+            <img alt="Tailwind CSS chat bubble component" src={avatar} />
           </div>
-        ) : (
-          <></>
-        )}
-        <div className="chat-header text-gray-600">
-          {fromMe ? 'me' : selectedConversation?.fullName}
         </div>
+        {!isSingleChat && (
+          <div className="chat-header text-gray-300">
+            {fromMe ? "me" : selectedConversation?.fullName}
+          </div>
+        )}
         <div
           className={`chat-bubble min-w-[86px] text-white ${bubbleBgColor} ${shakeClass} pb-2 ${
-            fromMe ? 'cursor-pointer' : ''
+            fromMe ? "cursor-pointer" : ""
           }`}
           onContextMenu={handleContextMenu}
           ref={msgRef}
@@ -91,10 +96,9 @@ const Message = ({
           )}
           {/*  todo: implement more messageType*/}
         </div>
-        
         <div
           className={
-            'chat-footer z-[-1] opacity-50 text-xs text-gray-300 flex gap-1 items-center'
+            "chat-footer z-[-1] opacity-50 text-xs text-gray-300 flex gap-1 items-center"
           }
         >
           {formattedTime}
