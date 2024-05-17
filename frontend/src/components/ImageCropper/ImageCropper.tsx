@@ -93,7 +93,17 @@ const ImageCropper = ({
         } = croppedAreaPixels
         croppedCanvas.width = croppedWidth
         croppedCanvas.height = croppedHeight
-        croppedCtx.drawImage(canvas, x, y, width, height, 0, 0, width, height)
+        croppedCtx.drawImage(
+          canvas,
+          x,
+          y,
+          croppedWidth,
+          croppedHeight,
+          0,
+          0,
+          croppedWidth,
+          croppedHeight,
+        )
 
         croppedCanvas.toBlob((blob) => {
           if (blob) {

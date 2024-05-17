@@ -80,6 +80,6 @@ body {
 }
 
 .reactEasyCrop_CropArea {
-  border-radius: 50%;
+  /*border-radius: 50%;*/
   border: 2px dashed ghostwhite !important;
 }
