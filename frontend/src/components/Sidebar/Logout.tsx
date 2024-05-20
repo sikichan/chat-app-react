@@ -27,7 +27,7 @@ const Logout = () => {
   }, [])
   return (
     <div className="rounded w-full mt-1 flex gap-2 items-center justify-between">
-      <div className="text-light text-[14px] flex items-end justify-end w-full">
+      <div className="text-[14px] flex items-end justify-end w-full">
         <span
           className="mr-1.5 hover:text-yellow cursor-pointer"
           onClick={(e) => {
@@ -57,7 +57,7 @@ const Logout = () => {
             <li>
               <button
                 disabled={loading}
-                className="btn btn-ghost btn-md  py-0 px-1"
+                className="btn btn-ghost btn-md py-0 px-1"
                 onDoubleClick={handleLogout}
               >
                 {loading ? (
