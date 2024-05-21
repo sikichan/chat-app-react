@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
-import { Fetch } from '@/fetch.ts'
-import toast from 'react-hot-toast'
-import useConversation from '@/zustand/useConversation.ts'
+import { useEffect, useState } from "react"
+import { request } from "@/fetch.ts"
+import toast from "react-hot-toast"
+import useConversation from "@/zustand/useConversation.ts"
+import { ResponseError } from "@/types.ts"
 
 const useGetMessages = () => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -10,16 +11,15 @@ const useGetMessages = () => {
     setLoading(true)
     const fetchMessages = async () => {
       try {
-        const data = await Fetch({
-          url: `/api/messages/${selectedConversation?._id}`,
-          method: 'GET',
-        })
+        const { data } = await request.get(
+          `/messages/${selectedConversation?._id}`,
+        )
         if (data.error) {
           return toast.error(data.error)
         }
         setMessages(data)
       } catch (error) {
-        toast.error((error as Error).message)
+        toast.error((error as ResponseError).message)
       } finally {
         setLoading(false)
       }

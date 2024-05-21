@@ -1,42 +1,34 @@
-import { FetchProps } from "./types.ts"
+import axios from "axios"
 
-const Fetch = async ({
-  url,
-  method,
-  body = method === "GET" ? undefined : {},
-}: FetchProps) => {
-  console.log(url)
-
-  const res = await fetch(url, {
-    method,
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-  if (res.status === 401) {
-    await AuthedFetch({
-      url: "/api/auth/logout",
-      method: "POST",
+const service = axios.create({
+  baseURL: "/api",
+  timeout: 5000,
+})
+service.interceptors.request.use(
+  (resolve) => {
+    resolve.headers["x-header-host"] = window.location.host
+    return resolve
+  },
+  (error) => {
+    return Promise.reject(error)
+  },
+)
+service.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  ({ response }) => {
+    console.log("response", response.status)
+    if (response.status === 401) {
+      localStorage.removeItem("chat-user")
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
+    }
+    return Promise.reject({
+      status: response.status,
+      message: response.data?.error,
     })
-    localStorage.removeItem("chat-user")
-    return (window.location.href = "/login")
-  }
-  return res.json()
-}
-const AuthedFetch = async ({
-  url,
-  method,
-  body = method === "GET" ? undefined : {},
-}: FetchProps) => {
-  const res = await fetch(url, {
-    method,
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-  })
-  return res.json()
-}
-export { Fetch, AuthedFetch }
+  },
+)
+export { service as request }

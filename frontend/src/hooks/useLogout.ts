@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import { AuthedFetch } from '@/fetch.ts'
-import toast from 'react-hot-toast'
-import useAuthContext from '@/hooks/useAuthContext.ts'
+import { useState } from "react"
+import { request } from "@/fetch.ts"
+import toast from "react-hot-toast"
+import useAuthContext from "@/hooks/useAuthContext.ts"
+import { ResponseError } from "@/types.ts"
 
 const useLogout = () => {
   const [loading, setLoading] = useState(false)
@@ -9,21 +10,17 @@ const useLogout = () => {
   const logout = async () => {
     try {
       setLoading(true)
-      const data = await AuthedFetch({
-        url: '/api/auth/logout',
-        method: 'POST',
-      })
-      console.log(data, 'logout')
+      const { data } = await request.post("/auth/logout", {})
       if (data.error) {
         return toast.error(data.error)
       }
       if (data.message) {
         toast.success(data.message)
       }
-      localStorage.removeItem('chat-user')
+      localStorage.removeItem("chat-user")
       setAuthUser(null)
     } catch (error) {
-      toast.error((error as Error).message)
+      toast.error((error as ResponseError).message)
     } finally {
       setLoading(false)
     }

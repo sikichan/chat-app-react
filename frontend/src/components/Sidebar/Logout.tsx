@@ -15,7 +15,7 @@ const Logout = () => {
   }
   const menuRef = useRef<HTMLUListElement>(null)
   const handleClickOutside = (event: MouseEvent) => {
-    if (showMenu && !menuRef.current?.contains(event.target as Node)) {
+    if (!menuRef.current?.contains(event.target as Node)) {
       setShowMenu(false)
     }
   }
@@ -26,7 +26,7 @@ const Logout = () => {
     }
   }, [])
   return (
-    <div className="rounded w-full mt-1 flex gap-2 items-center justify-between">
+    <div className="w-full mt-1 flex gap-2 items-center justify-between">
       <div className="text-[14px] flex items-end justify-end w-full">
         <span
           className="mr-1.5 hover:text-yellow cursor-pointer"
@@ -37,9 +37,9 @@ const Logout = () => {
         >
           {authUser?.fullName}
         </span>
-        <div className="avatar online cursor-pointer">
+        <div className="avatar online rounded-full ring ring-primary ring-offset-base-100 ring-offset-2  cursor-pointer ">
           <div
-            className="w-12"
+            className="w-12 rounded-full"
             onClick={(e) => {
               e.stopPropagation()
               setShowMenu((show) => !show)

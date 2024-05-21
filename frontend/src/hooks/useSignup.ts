@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { SignupUser } from '@/types.ts'
-import { Fetch } from '@/fetch.ts'
-import toast from 'react-hot-toast'
-import useAuthContext from '@/hooks/useAuthContext.ts'
+import { useState } from "react"
+import { ResponseError, SignupUser } from "@/types.ts"
+import toast from "react-hot-toast"
+import useAuthContext from "@/hooks/useAuthContext.ts"
+import { request } from "@/fetch.ts"
 
 const useSignup = () => {
   const [loading, setLoading] = useState(false)
@@ -16,18 +16,20 @@ const useSignup = () => {
   }: SignupUser) => {
     try {
       setLoading(true)
-      const data = await Fetch({
-        url: '/api/auth/signup',
-        body: { fullName, gender, username, password, confirmedPassword },
-        method: 'POST',
+      const { data } = await request.post("auth/signup", {
+        fullName,
+        gender,
+        username,
+        password,
+        confirmedPassword,
       })
       if (data.error) {
         return toast.error(data.error)
       }
-      localStorage.setItem('chat-user', JSON.stringify(data))
+      localStorage.setItem("chat-user", JSON.stringify(data))
       setAuthUser(data)
     } catch (error) {
-      toast.error((error as Error).message)
+      toast.error((error as ResponseError).message)
     } finally {
       setLoading(false)
     }

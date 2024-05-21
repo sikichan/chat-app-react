@@ -6,13 +6,7 @@ export interface LoginUser {
 export interface SignupUser extends LoginUser {
   fullName: string
   confirmedPassword: string
-  gender: 'boy' | 'girl'
-}
-
-export interface FetchProps {
-  url: string
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE'
-  body?: object
+  gender: "boy" | "girl"
 }
 
 export type MessageModel = {
@@ -30,13 +24,18 @@ export type UserModel = {
   fullName: string
   username: string
   avatar: string
-  gender: 'boy' | 'girl'
+  gender: "boy" | "girl"
 }
 
 export enum MessageType {
-  'text' = 'text',
-  'image' = 'image',
-  'video' = 'video',
-  'audio' = 'audio',
-  'file' = 'file',
+  "text" = "text",
+  "image" = "image",
+  "video" = "video",
+  "audio" = "audio",
+  "file" = "file",
+}
+
+export type ResponseError = {
+  status: number
+  message: string
 }

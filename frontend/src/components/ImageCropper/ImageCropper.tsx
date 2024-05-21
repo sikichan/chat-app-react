@@ -76,11 +76,12 @@ const ImageCropper = ({
         const radian = degreesToRadians(rotation) // 角度=>弧度
         canvas.width = boxWidth
         canvas.height = boxHeight
+
         ctx.translate(boxWidth / 2, boxHeight / 2)
         ctx.rotate(radian)
         ctx.translate(-image.width / 2, -image.height / 2)
         // drawImage(imageToDraw, 图片开始绘制的x坐标, y坐标, 绘制的宽度, 高度, 绘制到画布的x坐标, y坐标, 绘制的宽度, 高度)
-        ctx.drawImage(image, 0, 0)
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
 
         const croppedCanvas = document.createElement("canvas")
         const croppedCtx = croppedCanvas.getContext("2d")
@@ -104,12 +105,22 @@ const ImageCropper = ({
           croppedWidth,
           croppedHeight,
         )
+        console.log("debug::", croppedWidth, croppedHeight)
+        // let quality = 0.6
+        // if (blob?.size > 10 * 1024 * 1024) {
+        //   quality = 0.2
+        // }
+        const quality = 1 / (croppedWidth / 300)
 
-        croppedCanvas.toBlob((blob) => {
-          if (blob) {
-            onCrop(blob)
-          }
-        }, "image/png")
+        croppedCanvas.toBlob(
+          (blob) => {
+            if (blob) {
+              onCrop(blob)
+            }
+          },
+          "image/jpeg",
+          quality,
+        )
       }
       image.src = imageSrc
     } catch (error) {

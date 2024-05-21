@@ -1,10 +1,10 @@
-import React, { createContext, useState, PropsWithChildren } from 'react'
+import React, { createContext, PropsWithChildren, useState } from "react"
 
 interface AuthUserType {
   _id: string
   username: string
   fullName: string
-  gender: 'boy' | 'girl'
+  gender: "boy" | "girl"
   avatar: string
 }
 
@@ -20,7 +20,7 @@ export const AuthContext = createContext<AuthContextType>({
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
   const [authUser, setAuthUser] = useState<AuthUserType | null>(() => {
-    const storedUser = localStorage.getItem('chat-user')
+    const storedUser = localStorage.getItem("chat-user")
     return storedUser ? JSON.parse(storedUser) : null
   })
 
