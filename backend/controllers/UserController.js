@@ -1,5 +1,6 @@
 import User from "../models/UserModel.js"
 import { getDataUrl } from "../utils/file.js"
+import { io } from "../socket.js"
 
 export const getUsersForSidebar = async (req, res) => {
   try {
@@ -29,6 +30,8 @@ export const updateUserAvatar = async (req, res) => {
     if (!updatedUser) {
       return res.status(400).json({ error: "User does not exist" })
     }
+    // socket modify-avatar
+    io.emit("modify-avatar", updatedUser)
     res.status(200).json(updatedUser)
   } catch (e) {
     console.log(e)

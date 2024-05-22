@@ -105,11 +105,6 @@ const ImageCropper = ({
           croppedWidth,
           croppedHeight,
         )
-        console.log("debug::", croppedWidth, croppedHeight)
-        // let quality = 0.6
-        // if (blob?.size > 10 * 1024 * 1024) {
-        //   quality = 0.2
-        // }
         const quality = 1 / (croppedWidth / 300)
 
         croppedCanvas.toBlob(

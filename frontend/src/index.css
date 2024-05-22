@@ -15,8 +15,9 @@ body {
 }
 
 .Home {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-  url('@/assets/background.JPG');
+  /*background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),*/
+  /*url('@/assets/background.JPG');*/
+  background-image: linear-gradient(#424769, #333333);
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
