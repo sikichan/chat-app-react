@@ -18,7 +18,7 @@ const Conversation = ({ conversation, lastIndex }: Props) => {
   return (
     <>
       <div
-        className={"flex gap-2 items-center text-gray-300 hover:bg-yellow-light hover:text-black rounded p-2 py-1 cursor-pointer transition ease-in-out duration-500 ".concat(
+        className={"flex gap-2 items-center text-gray-300 hover:bg-gray rounded p-2 py-1 cursor-pointer transition ease-in-out duration-500 ".concat(
           receiverId === selectedConversation?._id ? "selected-to-chat" : "",
         )}
         onClick={handleClick}

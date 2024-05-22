@@ -7,6 +7,8 @@
 :root {
   font-family: 'Reddit Mono', sans-serif;
   --var-yellow: #ffc470;
+  --var-gray: #35374B;
+  --var-purple: #070F2B;
 }
 
 body {
@@ -22,6 +24,8 @@ body {
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
+  min-width: 850px; /* 最小宽度 */
+  height: 650px; /* 最小高度 */
 }
 
 .ImageCropper {
@@ -29,8 +33,7 @@ body {
 }
 
 .selected-to-chat {
-  background-color: var(--var-yellow);
-  color: black;
+  background-color: var(--var-purple);
 }
 
 ::-webkit-scrollbar {

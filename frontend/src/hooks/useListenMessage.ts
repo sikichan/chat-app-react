@@ -23,7 +23,7 @@ const useListenMessage = () => {
         audio?.play().catch((err) => console.log(err))
         toast("你有一条新消息", {
           position: "top-right",
-          duration: 1500,
+          icon: "👏",
         })
       }
       if (

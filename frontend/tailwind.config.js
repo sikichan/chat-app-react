@@ -20,6 +20,8 @@ export default {
       colors: {
         green: "#7ABA78",
         "dark-green": "#1A4D2E",
+        gray: "#35374B",
+        purple: "#070F2B",
         blue: "#4D869C",
         info: "#EEF7FF",
         "green-light": "#CDE8E5",

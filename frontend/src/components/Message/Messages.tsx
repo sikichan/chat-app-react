@@ -48,7 +48,9 @@ const Messages = () => {
         deletedMessage.senderId === selectedConversation!._id
       ) {
         setMessages(messages.filter((m) => m._id !== deletedMessage._id))
-        toast("对方撤回了一条消息")
+        toast("对方撤回了一条消息", {
+          icon: "👈",
+        })
       }
     })
     return () => {
