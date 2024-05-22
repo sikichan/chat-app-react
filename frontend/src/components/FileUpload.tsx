@@ -79,27 +79,15 @@ const FileUpload = ({ onFileUpload }: Props) => {
 
 const Container = styled.div`
   position: relative;
-  //
-  //.file-upload {
-  //  width: 3rem;
-  //  height: 3rem;
-  //  border-radius: 0.2rem;
-  //  border: 0.08rem dashed #424769;
-  //  display: flex;
-  //  justify-content: center;
-  //  align-items: center;
-  //  color: #424769;
-  //  transition: background-color 0.3s;
-  //}
 
   .beauty {
     margin-top: 1rem;
     padding: 2rem 1rem;
     border: 0.08rem dashed #424769;
-    border-radius: 0.2rem;
+    border-radius: 0.4rem;
     text-align: center;
     color: #424769;
-    font-size: 0.7rem;
+    font-size: 1rem;
 
     &.drag-over {
       background-color: #e0e0e0;

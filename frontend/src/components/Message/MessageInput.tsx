@@ -1,37 +1,58 @@
-import React, {useEffect, useRef, useState} from 'react'
-import {BsSend} from 'react-icons/bs'
-import useSendMessage from '@/hooks/useSendMessage'
-import useConversation from '@/zustand/useConversation.ts';
+import React, { useEffect, useRef, useState } from "react"
+import useSendMessage from "@/hooks/useSendMessage"
+import useConversation from "@/zustand/useConversation.ts"
+import EmojiPicker from "emoji-picker-react"
+import { MdOutlineEmojiEmotions } from "react-icons/md"
+import { BsFillSendArrowUpFill } from "react-icons/bs"
 
 const MessageInput = () => {
-  const [message, setMessage] = useState('')
-  const {loading, sendMessage} = useSendMessage()
-  const {selectedConversation} = useConversation()
-  
+  const [message, setMessage] = useState("")
+  const { loading, sendMessage } = useSendMessage()
+  const { selectedConversation } = useConversation()
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false)
   const ref = useRef<HTMLInputElement>(null)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!message.trim()) return
     await sendMessage(message)
-    setMessage('')
+    setMessage("")
+  }
+  const handleEmojiClick = ({ emoji }: { emoji: string }) => {
+    setMessage((prev) => prev.concat(emoji))
+    setShowEmojiPicker(false)
+    ref.current?.focus()
   }
   useEffect(() => {
     if (ref.current) {
       ref.current.focus()
     }
-  }, [selectedConversation?._id]);
-  
+  }, [selectedConversation?._id])
+
   return (
     <form className="px-4 my-3" onSubmit={handleSubmit}>
-      <div className="w-full relative">
-        <input
-          type="text"
-          className="border text-sm rounded-lg block w-full p-2.5 border-gray-600"
-          placeholder="Send a message"
-          ref={ref}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+      <div className={`${showEmojiPicker ? "" : "hidden"}`}>
+        <EmojiPicker
+          lazyLoadEmojis={true}
+          autoFocusSearch={false}
+          onEmojiClick={handleEmojiClick}
         />
+      </div>
+      <div className="w-full relative">
+        <div className="relative">
+          <MdOutlineEmojiEmotions
+            className="absolute h-full w-[38px] pl-2 cursor-pointer text-orange hover:text-yellow"
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+          />
+          <input
+            type="text"
+            className="border text-md rounded-lg block w-full p-3 border-gray-600 px-9"
+            placeholder="Send a message"
+            ref={ref}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+        </div>
+
         <button
           type="submit"
           className="absolute inset-y-0 end-0 flex items-center pe-3"
@@ -39,7 +60,7 @@ const MessageInput = () => {
           {loading ? (
             <div className="loading loading-spinner"></div>
           ) : (
-            <BsSend/>
+            <BsFillSendArrowUpFill className="w-[40px] text-dark-green hover:text-green" />
           )}
         </button>
       </div>
