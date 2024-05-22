@@ -84,16 +84,18 @@ const Message = ({
           ref={msgRef}
         >
           {message.message as string}
-          {activeMessageId === message._id && canWithdraw && (
-            <div className="relative z-10" ref={withdrawRef}>
-              <button
-                className="absolute btn btn-xs font-thin flex"
-                onClick={handleWithdraw}
-              >
-                撤回
-              </button>
-            </div>
-          )}
+          {authUser?._id === message.senderId &&
+            activeMessageId === message._id &&
+            canWithdraw && (
+              <div className="relative z-10" ref={withdrawRef}>
+                <button
+                  className="absolute btn btn-xs font-thin flex"
+                  onClick={handleWithdraw}
+                >
+                  撤回
+                </button>
+              </div>
+            )}
           {/*  todo: implement more messageType*/}
         </div>
         <div

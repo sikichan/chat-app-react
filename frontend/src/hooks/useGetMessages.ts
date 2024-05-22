@@ -7,6 +7,7 @@ import { ResponseError } from "@/types.ts"
 const useGetMessages = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const { selectedConversation, messages, setMessages } = useConversation()
+
   useEffect(() => {
     setLoading(true)
     const fetchMessages = async () => {
@@ -26,6 +27,7 @@ const useGetMessages = () => {
     }
     fetchMessages()
   }, [selectedConversation?._id])
+
   return {
     loading,
     messages,

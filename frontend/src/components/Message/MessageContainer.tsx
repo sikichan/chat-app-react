@@ -3,14 +3,11 @@ import { BiSolidMessageRoundedDots } from "react-icons/bi"
 import Messages from "./Messages.tsx"
 import MessageInput from "./MessageInput.tsx"
 import useConversation from "@/zustand/useConversation.ts"
-import { useEffect } from "react"
+import useListenMessage from "@/hooks/useListenMessage.ts"
 
 const MessageContainer = () => {
-  const { selectedConversation, setSelectedConversation } = useConversation()
-
-  useEffect(() => {
-    return () => setSelectedConversation(null)
-  }, [setSelectedConversation])
+  const { selectedConversation } = useConversation()
+  useListenMessage()
   return (
     <div className="w-full flex flex-col pl-4">
       {!selectedConversation ? (

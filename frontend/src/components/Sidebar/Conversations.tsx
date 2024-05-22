@@ -1,8 +1,8 @@
 import Conversation from "./Conversation.tsx"
 import useGetConversations from "@/hooks/useGetConversations.ts"
 import { UserModel } from "@/types.ts"
-import { useEffect } from "react"
 import useSocketContext from "@/hooks/useSocketContext.ts"
+import { useEffect } from "react"
 
 const Conversations = ({ searchKeyword }: { searchKeyword: string }) => {
   const { loading, conversations, setConversations } = useGetConversations({
@@ -12,15 +12,10 @@ const Conversations = ({ searchKeyword }: { searchKeyword: string }) => {
   useEffect(() => {
     if (socket) {
       socket.on("modify-avatar", (updatedUser) => {
-        console.log("updatedUser:", updatedUser)
         setConversations((conversations) =>
-          conversations.map((conversation) => {
-            if (conversation._id === updatedUser._id) {
-              return updatedUser
-            } else {
-              return conversation
-            }
-          }),
+          conversations.map((conversation) =>
+            conversation._id === updatedUser._id ? updatedUser : conversation,
+          ),
         )
       })
     }

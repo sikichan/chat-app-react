@@ -2,19 +2,21 @@ import useGetMessages from "@/hooks/useGetMessages.ts"
 import MessageSkeleton from "@/components/MessageSkeleton"
 import { useEffect, useRef, useState } from "react"
 import Message from "@/components/Message/Message.tsx"
-import useListenMessage from "@/hooks/useListenMessage.ts"
 import { request } from "@/fetch.ts"
 import toast from "react-hot-toast"
+import { MessageModel, ResponseError } from "@/types.ts"
 import useConversation from "@/zustand/useConversation.ts"
-import { ResponseError } from "@/types.ts"
+import useSocketContext from "@/hooks/useSocketContext.ts"
+import useAuthContext from "@/hooks/useAuthContext.ts"
 
 const Messages = () => {
   const { messages, loading } = useGetMessages()
   const [activeMessageId, setActiveMessageId] = useState("")
-  const { setMessages } = useConversation()
-  useListenMessage()
+  const { socket } = useSocketContext()
+  const { authUser } = useAuthContext()
+  const { setMessages, selectedConversation } = useConversation()
+
   const handleWithdraw = async (id: string, selectedConversationId: string) => {
-    console.log(id)
     try {
       const { data } = await request.delete(`/messages/withdraw/${id}`, {
         params: { receiverId: selectedConversationId },
@@ -23,7 +25,7 @@ const Messages = () => {
         return toast.error(data.error)
       }
       setMessages(messages.filter((m) => m._id !== data.id))
-      toast.success(data.message)
+      toast.success("消息撤回成功")
     } catch (error) {
       toast.error((error as ResponseError).message)
     }
@@ -39,7 +41,20 @@ const Messages = () => {
       clearTimeout(timerId)
     }
   }, [messages])
-
+  useEffect(() => {
+    socket?.on("withdraw-message", (deletedMessage: MessageModel) => {
+      if (
+        deletedMessage.receiverId === authUser!._id &&
+        deletedMessage.senderId === selectedConversation!._id
+      ) {
+        setMessages(messages.filter((m) => m._id !== deletedMessage._id))
+        toast("对方撤回了一条消息")
+      }
+    })
+    return () => {
+      socket?.off("withdraw-message")
+    }
+  }, [socket, selectedConversation, messages])
   return (
     <div className="px-4 flex-1 overflow-auto">
       {!loading &&

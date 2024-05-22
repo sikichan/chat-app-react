@@ -3,9 +3,9 @@ import React, {
   PropsWithChildren,
   useEffect,
   useState,
-} from 'react'
-import { Socket, io } from 'socket.io-client'
-import useAuthContext from '@/hooks/useAuthContext.ts'
+} from "react"
+import { io, Socket } from "socket.io-client"
+import useAuthContext from "@/hooks/useAuthContext.ts"
 
 interface SocketContextType {
   socket: Socket | null
@@ -34,7 +34,7 @@ const SocketProvider = ({ children }: PropsWithChildren) => {
       })
       setSocket(socket)
 
-      socket.on('online-users', (onlineUsers: string[]) => {
+      socket.on("online-users", (onlineUsers: string[]) => {
         setOnlineUsers(onlineUsers)
       })
       return () => {

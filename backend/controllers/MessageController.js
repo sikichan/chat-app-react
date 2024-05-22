@@ -35,7 +35,7 @@ export const sendMessage = async (req, res) => {
     }
     const senderSocketId = getSocketIdByUserId(senderId)
     if (senderSocketId) {
-      io.to("senderSocketId").emit("new-message", newMessage)
+      io.to(senderSocketId).emit("new-message", newMessage)
     }
 
     res.status(201).json(newMessage)
@@ -81,8 +81,15 @@ export const withdrawMessage = async (req, res) => {
         Conversation.findByIdAndUpdate(conversation._id, {
           $pull: { messages: message._id },
         }),
-        Message.deleteOne({ _id: id }),
+        message.deleteOne(),
       ])
+      // socket withdraw-message
+      const receiverSocketId = getSocketIdByUserId(receiverId)
+      const senderSocketId = getSocketIdByUserId(senderId)
+      io.to([receiverSocketId, senderSocketId]).emit(
+        "withdraw-message",
+        message,
+      )
       res.status(200).json({ id, message: "消息撤回成功" })
     } else {
       res.status(400).json({ error: "消息不在两分钟内，撤回失败" })
