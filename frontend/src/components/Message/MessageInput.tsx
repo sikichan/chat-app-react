@@ -29,7 +29,7 @@ const MessageInput = () => {
   }, [selectedConversation?._id])
 
   return (
-    <form className="px-4 my-3" onSubmit={handleSubmit}>
+    <form className="px-4" onSubmit={handleSubmit}>
       <div className={`${showEmojiPicker ? "" : "hidden"}`}>
         <EmojiPicker
           lazyLoadEmojis={true}

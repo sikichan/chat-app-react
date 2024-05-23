@@ -8,13 +8,27 @@ import { MessageModel, ResponseError } from "@/types.ts"
 import useConversation from "@/zustand/useConversation.ts"
 import useSocketContext from "@/hooks/useSocketContext.ts"
 import useAuthContext from "@/hooks/useAuthContext.ts"
+import InfiniteScroll from "react-infinite-scroller"
 
 const Messages = () => {
-  const { messages, loading } = useGetMessages()
+  const { messages, loadMore, page, hasMore } = useGetMessages()
   const [activeMessageId, setActiveMessageId] = useState("")
   const { socket } = useSocketContext()
   const { authUser } = useAuthContext()
+  const [loading, setLoading] = useState(false)
   const { setMessages, selectedConversation } = useConversation()
+  const scrollParentRef = useRef<HTMLDivElement>(null)
+  const lastMessageRef = useRef<HTMLDivElement>(null)
+
+  const handleLoadMore = async () => {
+    if (!scrollParentRef.current) return
+
+    if (scrollParentRef.current.scrollTop === 0 && hasMore && !loading) {
+      setLoading(true)
+      await loadMore(page)
+      setLoading(false)
+    }
+  }
 
   const handleWithdraw = async (id: string, selectedConversationId: string) => {
     try {
@@ -30,7 +44,7 @@ const Messages = () => {
       toast.error((error as ResponseError).message)
     }
   }
-  const lastMessageRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     const timerId = setTimeout(() => {
       lastMessageRef.current?.scrollIntoView({
@@ -40,7 +54,8 @@ const Messages = () => {
     return () => {
       clearTimeout(timerId)
     }
-  }, [messages])
+  }, [selectedConversation?._id, messages])
+
   useEffect(() => {
     socket?.on("withdraw-message", (deletedMessage: MessageModel) => {
       if (
@@ -57,11 +72,28 @@ const Messages = () => {
       socket?.off("withdraw-message")
     }
   }, [socket, selectedConversation, messages])
+
   return (
-    <div className="px-4 flex-1 overflow-auto">
-      {!loading &&
-        messages.length > 0 &&
-        messages.map((message) => (
+    <div
+      className="px-4 flex-1 overflow-auto"
+      ref={scrollParentRef}
+      onScroll={handleLoadMore}
+    >
+      <InfiniteScroll
+        pageStart={0}
+        loadMore={handleLoadMore}
+        hasMore={hasMore}
+        isReverse={true}
+        useWindow={false}
+        initialLoad={false}
+        loader={
+          <div className="flex items-center text-sm" key={0}>
+            <span className="loading loading-spinner mr-2" />
+            加载中...
+          </div>
+        }
+      >
+        {messages.map((message) => (
           <div key={message._id}>
             <Message
               message={message}
@@ -72,13 +104,15 @@ const Messages = () => {
             />
           </div>
         ))}
-      <div ref={lastMessageRef}></div>
-
-      {loading &&
-        [...new Array(5)].map((_, idx) => <MessageSkeleton key={idx} />)}
-      {!loading && messages.length === 0 && (
-        <p className="text-center">Send a message to start the conversation</p>
-      )}
+        <div ref={lastMessageRef}></div>
+        {loading &&
+          [...new Array(5)].map((_, idx) => <MessageSkeleton key={idx} />)}
+        {!loading && messages.length === 0 && (
+          <p className="text-center">
+            Send a message to start the conversation
+          </p>
+        )}
+      </InfiniteScroll>
     </div>
   )
 }

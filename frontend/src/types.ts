@@ -39,3 +39,7 @@ export type ResponseError = {
   status: number
   message: string
 }
+export type ResponseMessages = {
+  data: MessageModel[]
+  error?: string
+}

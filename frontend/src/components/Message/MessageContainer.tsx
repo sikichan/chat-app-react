@@ -15,18 +15,6 @@ const MessageContainer = () => {
       ) : (
         <>
           <div className="px-4 py-2 mb-2 rounded flex items-center gap-2">
-            {/*<div className={'avatar ' + (isOnline ? 'online' : '')}>*/}
-            {/*  <div className="w-10 rounded">*/}
-            {/*    <img*/}
-            {/*      alt="Tailwind CSS chat bubble component"*/}
-            {/*      src={selectedConversation.avatar}*/}
-            {/*      onError={(event) => {*/}
-            {/*        console.log(event)*/}
-            {/*        event.currentTarget.src = reactLogo*/}
-            {/*      }}*/}
-            {/*    />*/}
-            {/*  </div>*/}
-            {/*</div>*/}
             <span className="text-gray-200 font-bold flex-1">
               {selectedConversation.fullName}
             </span>

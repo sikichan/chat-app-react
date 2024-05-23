@@ -8,7 +8,7 @@ type Props = {
   lastIndex: boolean
 }
 const Conversation = ({ conversation, lastIndex }: Props) => {
-  const { fullName, avatar, gender, _id: receiverId } = conversation
+  const { fullName, avatar, _id: receiverId } = conversation
   const { selectedConversation, setSelectedConversation } = useConversation()
   const { onlineUsers } = useSocketContext()
   const handleClick = () => {
@@ -18,7 +18,7 @@ const Conversation = ({ conversation, lastIndex }: Props) => {
   return (
     <>
       <div
-        className={"flex gap-2 items-center text-gray-300 hover:bg-gray rounded p-2 py-1 cursor-pointer transition ease-in-out duration-500 ".concat(
+        className={"flex gap-1 p-2 items-center rounded cursor-pointer transition ease-in-out duration-500 ".concat(
           receiverId === selectedConversation?._id ? "selected-to-chat" : "",
         )}
         onClick={handleClick}
@@ -37,9 +37,9 @@ const Conversation = ({ conversation, lastIndex }: Props) => {
             </div>
           }
         </div>
-        <div className="flex flex-1 justify-between">
-          <p className="font-bold">{fullName}</p>
-          <div>{gender === "boy" ? "👦🏻" : "👧🏻"}</div>
+        <div className="flex justify-between">
+          <p className="font-bold ml-1">{fullName}</p>
+          {/*<div>{gender === "boy" ? "👦🏻" : "👧🏻"}</div>*/}
         </div>
       </div>
       {!lastIndex && <div className="border-base-100"></div>}

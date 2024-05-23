@@ -47,15 +47,22 @@ export const sendMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
   try {
-    const { id: userToChatId } = req.params
+    const { id: receiverId } = req.params
+    let page = parseInt(req.query.page) || 1
+    const limit = 10
+    const skip = (page - 1) * limit
     const senderId = req.user._id.toString()
-    const conversation = await Conversation.findOne({
-      participants: { $all: [senderId, userToChatId] },
-    }).populate("messages")
-    if (!conversation) {
-      return res.status(200).json([])
-    }
-    res.status(200).json(conversation.messages)
+    const messages = await Message.find({
+      $or: [
+        { senderId, receiverId },
+        { senderId: receiverId, receiverId: senderId },
+      ],
+    })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+    console.log(messages)
+    res.status(200).json(messages.reverse())
   } catch (e) {
     console.log("Error in MessageController.getMessages: ", e)
     res.status(500).json("Internal server error")

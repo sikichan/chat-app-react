@@ -1,14 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: 'Reddit Mono', sans-serif;
+  font-family: "Reddit Mono", sans-serif;
   --var-yellow: #ffc470;
-  --var-gray: #35374B;
-  --var-purple: #070F2B;
+  --var-gray: #333333;
+  --var-purple: #2a2752;
+  --var-dark-purple: #424769;
+  --var-light-purple: #7469b6;
+  --bg-color-light: linear-gradient(#7469b6, #555555);
+  --bg-color-dark: linear-gradient(#2c2b70, #363654);
+  --text-color: white;
+  --text-color-dark: black;
+  --selected-bg: #8677df;
 }
 
 body {
@@ -17,23 +24,35 @@ body {
 }
 
 .Home {
-  /*background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),*/
-  /*url('@/assets/background.JPG');*/
-  background-image: linear-gradient(#424769, #333333);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
   min-width: 850px; /* 最小宽度 */
-  height: 650px; /* 最小高度 */
+  width: 900px;
+  height: 650px;
+  margin: 0 10px;
+}
+
+@media (prefers-color-scheme: light) {
+  .Home {
+    background-image: var(--bg-color-light);
+    color: var(--text-color-dark);
+  }
+  
+  .selected-to-chat {
+    background-color: var(--selected-bg);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .Home {
+    background-image: var(--bg-color-dark);
+  }
+  
+  .selected-to-chat {
+    background-color: var(--var-purple);
+  }
 }
 
 .ImageCropper {
   background-color: #424769;
-}
-
-.selected-to-chat {
-  background-color: var(--var-purple);
 }
 
 ::-webkit-scrollbar {

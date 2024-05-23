@@ -1,5 +1,5 @@
-import { MdOutlineClear } from 'react-icons/md'
-import React from 'react'
+import { MdOutlineClear } from "react-icons/md"
+import React from "react"
 
 type Props = {
   value: string
@@ -15,17 +15,17 @@ const SearchInput = (props: Props) => {
     setValue(event.target.value)
   }
   const handleClear = () => {
-    setValue('')
+    setValue("")
   }
   return (
-    <form className='flex items-center gap-2' onSubmit={handleSubmit}>
-      <label className='input input-bordered flex items-center gap-2'>
+    <form className="flex items-center" onSubmit={handleSubmit}>
+      <label className="input input-bordered flex items-center gap-2">
         <input
-          type='text'
-          placeholder='Search...'
+          type="text"
+          placeholder="Search..."
           value={value}
           onChange={handleChange}
-          className='grow'
+          className="grow"
         />
         <MdOutlineClear onClick={handleClear} />
       </label>
