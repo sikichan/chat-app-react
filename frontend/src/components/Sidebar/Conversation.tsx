@@ -37,9 +37,10 @@ const Conversation = ({ conversation, lastIndex }: Props) => {
             </div>
           }
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center flex-1">
           <p className="font-bold ml-1">{fullName}</p>
-          {/*<div>{gender === "boy" ? "👦🏻" : "👧🏻"}</div>*/}
+          <div>*</div>
+          {/*  todo: red dot*/}
         </div>
       </div>
       {!lastIndex && <div className="border-base-100"></div>}

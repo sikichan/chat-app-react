@@ -78,7 +78,7 @@ const Message = ({
         )}
         <div className="relative">
           <div
-            className={`chat-bubble  text-white ${bubbleBgColor} ${shakeClass} pb-2 ${
+            className={`chat-bubble text-sm text-white ${bubbleBgColor} ${shakeClass} pb-2 ${
               fromMe ? "cursor-pointer" : ""
             }`}
             onContextMenu={handleContextMenu}

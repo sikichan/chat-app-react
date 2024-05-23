@@ -8,12 +8,12 @@ export const sendMessage = async (req, res) => {
     const { id: receiverId } = req.params
     const senderId = req.user._id
     let conversation = await Conversation.findOne({
-      participants: { $all: [senderId, receiverId] },
+      members: { $all: [senderId, receiverId] },
     })
 
     if (!conversation) {
       conversation = await Conversation.create({
-        participants: [senderId, receiverId],
+        members: [senderId, receiverId],
       })
     }
     const newMessage = new Message({
@@ -81,7 +81,7 @@ export const withdrawMessage = async (req, res) => {
     let createdAt = new Date(message.createdAt).getTime()
     if (createdAt >= twoMinutesAgo && createdAt <= new Date().getTime()) {
       const conversation = await Conversation.findOne({
-        participants: { $all: [senderId, receiverId] },
+        members: { $all: [senderId, receiverId] },
       })
       await Promise.all([
         Conversation.findByIdAndUpdate(conversation._id, {

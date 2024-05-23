@@ -128,9 +128,6 @@ const Messages = () => {
             />
           </div>
         ))}
-        {!messages.length && (
-          <p className="text-center text-[11px] mt-10">发送消息以开始对话</p>
-        )}
       </InfiniteScroll>
     </div>
   )
