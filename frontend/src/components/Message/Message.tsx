@@ -76,27 +76,29 @@ const Message = ({
             {fromMe ? "me" : selectedConversation?.fullName}
           </div>
         )}
-        <div
-          className={`chat-bubble min-w-[86px] text-white ${bubbleBgColor} ${shakeClass} pb-2 ${
-            fromMe ? "cursor-pointer" : ""
-          }`}
-          onContextMenu={handleContextMenu}
-          ref={msgRef}
-        >
-          {message.message as string}
-          {authUser?._id === message.senderId &&
-            activeMessageId === message._id &&
-            canWithdraw && (
-              <div className="relative z-10" ref={withdrawRef}>
-                <button
-                  className="absolute btn btn-xs font-thin flex"
-                  onClick={handleWithdraw}
-                >
-                  撤回
-                </button>
-              </div>
-            )}
-          {/*  todo: implement more messageType*/}
+        <div className="relative">
+          <div
+            className={`chat-bubble  text-white ${bubbleBgColor} ${shakeClass} pb-2 ${
+              fromMe ? "cursor-pointer" : ""
+            }`}
+            onContextMenu={handleContextMenu}
+            ref={msgRef}
+          >
+            {message.message as string}
+            {authUser?._id === message.senderId &&
+              activeMessageId === message._id &&
+              canWithdraw && (
+                <div className="absolute z-10 left-0" ref={withdrawRef}>
+                  <button
+                    className="btn btn-xs font-thin"
+                    onClick={handleWithdraw}
+                  >
+                    撤回
+                  </button>
+                </div>
+              )}
+            {/*  todo: implement more messageType*/}
+          </div>
         </div>
         <div
           className={
