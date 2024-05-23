@@ -7,8 +7,10 @@ import { useEffect } from "react"
 const Conversations = ({ searchKeyword }: { searchKeyword: string }) => {
   const { loading, conversations, setConversations } = useGetConversations({
     searchKeyword,
+    needFetch: true,
   })
   const { socket } = useSocketContext()
+
   useEffect(() => {
     if (socket) {
       socket.on("modify-avatar", (updatedUser) => {
@@ -18,10 +20,16 @@ const Conversations = ({ searchKeyword }: { searchKeyword: string }) => {
           ),
         )
       })
+      socket.on("new-user", (newUser: UserModel) => {
+        console.log("new user", newUser)
+        setConversations((conversations) => {
+          return [...conversations, newUser]
+        })
+      })
     }
   }, [socket])
   return (
-    <div className="flex-auto overflow-auto">
+    <div className={`flex-auto overflow-auto`}>
       {loading ? (
         <span className="loading loading-dots loading-lg"></span>
       ) : (

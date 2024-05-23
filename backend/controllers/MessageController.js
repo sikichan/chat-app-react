@@ -48,17 +48,16 @@ export const sendMessage = async (req, res) => {
 export const getMessages = async (req, res) => {
   try {
     const { id: receiverId } = req.params
-    let page = parseInt(req.query.page) || 1
+    let createdAt = parseInt(req.query.createdAt)
     const limit = 10
-    const skip = (page - 1) * limit
     const senderId = req.user._id.toString()
     const messages = await Message.find({
       $or: [
         { senderId, receiverId },
         { senderId: receiverId, receiverId: senderId },
       ],
+      createdAt: { $lt: new Date(createdAt) },
     })
-      .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 })
     console.log(messages)

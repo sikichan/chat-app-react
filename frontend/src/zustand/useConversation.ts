@@ -11,6 +11,7 @@ type Action = {
     selectedConversation: State["selectedConversation"],
   ) => void
   setMessages: (message: MessageModel[]) => void
+  clearMessages: () => void
 }
 
 const useConversation = create<State & Action>()(
@@ -19,7 +20,8 @@ const useConversation = create<State & Action>()(
     setSelectedConversation: (selectedConversation) =>
       set({ selectedConversation }),
     messages: [],
-    setMessages: (messages) => set({ messages }),
+    setMessages: (newMessages) => set(() => ({ messages: newMessages })),
+    clearMessages: () => set(() => ({ messages: [] })),
   })),
 )
 

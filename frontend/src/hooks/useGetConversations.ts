@@ -3,7 +3,13 @@ import toast from "react-hot-toast"
 import { ResponseError, UserModel } from "@/types.ts"
 import { request } from "@/fetch.ts"
 
-const useGetConversations = ({ needFetch = true, searchKeyword = "" }) => {
+const useGetConversations = ({
+  searchKeyword = "",
+  needFetch,
+}: {
+  searchKeyword: string
+  needFetch: boolean
+}) => {
   const [loading, setLoading] = useState(true)
   const [conversations, setConversations] = useState<UserModel[]>([])
   const fetchConversations = async () => {

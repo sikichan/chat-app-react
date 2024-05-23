@@ -51,7 +51,7 @@ const Logout = () => {
 
         {showMenu && (
           <ul
-            className="absolute bottom-14 font-thin right-1 menu menu-xs bg-base-200 w-36 rounded-box "
+            className="absolute bottom-14 z-10 font-thin right-1 menu menu-xs bg-base-200 w-36 rounded-box "
             ref={menuRef}
           >
             <li>

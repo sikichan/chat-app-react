@@ -105,7 +105,7 @@ const ImageCropper = ({
           croppedWidth,
           croppedHeight,
         )
-        const quality = 1 / (croppedWidth / 300)
+        const quality = 1 / (croppedWidth / 200)
 
         croppedCanvas.toBlob(
           (blob) => {

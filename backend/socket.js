@@ -15,7 +15,7 @@ const io = new Server(server, {
 })
 io.on("connection", (socket) => {
   console.log("user connected:", socket.id)
-  io.socketsJoin("all-users")
+  //io.socketsJoin("all-users")
   const userId = socket.handshake.query.userId
   if (userId !== undefined) {
     UserSocketMap[userId] = socket.id

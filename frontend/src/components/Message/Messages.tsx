@@ -1,5 +1,4 @@
 import useGetMessages from "@/hooks/useGetMessages.ts"
-import MessageSkeleton from "@/components/MessageSkeleton"
 import { useEffect, useRef, useState } from "react"
 import Message from "@/components/Message/Message.tsx"
 import { request } from "@/fetch.ts"
@@ -11,22 +10,28 @@ import useAuthContext from "@/hooks/useAuthContext.ts"
 import InfiniteScroll from "react-infinite-scroller"
 
 const Messages = () => {
-  const { messages, loadMore, page, hasMore } = useGetMessages()
+  const { messages, loadMore, hasMore, fetching } = useGetMessages()
   const [activeMessageId, setActiveMessageId] = useState("")
   const { socket } = useSocketContext()
   const { authUser } = useAuthContext()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const { setMessages, selectedConversation } = useConversation()
   const scrollParentRef = useRef<HTMLDivElement>(null)
-  const lastMessageRef = useRef<HTMLDivElement>(null)
-
+  const [page, setPage] = useState<number>(0)
+  const lastMessageId = messages[messages.length - 1]
   const handleLoadMore = async () => {
     if (!scrollParentRef.current) return
+    if (loading && scrollParentRef.current.scrollTop > 0 && loading) return
 
-    if (scrollParentRef.current.scrollTop === 0 && hasMore && !loading) {
-      setLoading(true)
-      await loadMore(page)
-      setLoading(false)
+    if (scrollParentRef.current.scrollTop === 0) {
+      setLoading((prev) => (prev ? prev : !prev))
+      setPage((page) => page + 1)
+      if (hasMore && loading && !fetching) {
+        setLoading((prev) => (prev ? !prev : prev))
+        await loadMore(new Date(messages[0]?.createdAt).getTime(), false)
+      }
+    } else {
+      setLoading((prev) => (prev ? !prev : prev))
     }
   }
 
@@ -46,15 +51,31 @@ const Messages = () => {
   }
 
   useEffect(() => {
-    const timerId = setTimeout(() => {
-      lastMessageRef.current?.scrollIntoView({
-        behavior: "smooth",
-      })
-    }, 100)
+    if (messages.length === 0 || page > 0) return
+    const lastMsg = document.createElement("div")
+    scrollParentRef.current?.appendChild(lastMsg)
+    lastMsg.scrollIntoView({
+      behavior: "smooth",
+    })
+    setLoading((prev) => (prev ? !prev : prev))
     return () => {
-      clearTimeout(timerId)
+      scrollParentRef.current?.removeChild(lastMsg)
     }
-  }, [selectedConversation?._id, messages])
+  }, [selectedConversation, messages])
+
+  useEffect(() => {
+    const lastMsg = document.createElement("div")
+    scrollParentRef.current?.appendChild(lastMsg)
+    lastMsg.scrollIntoView({
+      behavior: "instant",
+    })
+    return () => {
+      scrollParentRef.current?.removeChild(lastMsg)
+    }
+  }, [lastMessageId])
+  useEffect(() => {
+    setPage(0)
+  }, [selectedConversation])
 
   useEffect(() => {
     socket?.on("withdraw-message", (deletedMessage: MessageModel) => {
@@ -87,8 +108,11 @@ const Messages = () => {
         useWindow={false}
         initialLoad={false}
         loader={
-          <div className="flex items-center text-sm" key={0}>
-            <span className="loading loading-spinner mr-2" />
+          <div
+            className="flex items-center text-[11px] justify-center pt-2"
+            key={0}
+          >
+            <span className="loading loading-spinner mr-2 text-sm" />
             加载中...
           </div>
         }
@@ -104,13 +128,8 @@ const Messages = () => {
             />
           </div>
         ))}
-        <div ref={lastMessageRef}></div>
-        {loading &&
-          [...new Array(5)].map((_, idx) => <MessageSkeleton key={idx} />)}
-        {!loading && messages.length === 0 && (
-          <p className="text-center">
-            Send a message to start the conversation
-          </p>
+        {!messages.length && (
+          <p className="text-center text-[11px] mt-10">发送消息以开始对话</p>
         )}
       </InfiniteScroll>
     </div>

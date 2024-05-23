@@ -35,6 +35,7 @@ const SocketProvider = ({ children }: PropsWithChildren) => {
       setSocket(socket)
 
       socket.on("online-users", (onlineUsers: string[]) => {
+        console.log("onlineUsers", onlineUsers)
         setOnlineUsers(onlineUsers)
       })
       return () => {

@@ -6,57 +6,63 @@ import { ResponseError, ResponseMessages } from "@/types.ts"
 
 const limit = 10
 const useGetMessages = () => {
-  const [loading, setLoading] = useState<boolean>(false)
+  const [fetching, setFetching] = useState<boolean>(false)
   const [hasMore, setHasMore] = useState<boolean>(false)
-  const [page, setPage] = useState<number>(1)
-  const { selectedConversation, messages, setMessages } = useConversation()
+  const { selectedConversation, messages, setMessages, clearMessages } =
+    useConversation()
 
-  const fetchMessages = async (page: number) => {
+  const fetchMessages = async (createdAt: number) => {
     try {
-      setLoading(true)
+      setFetching(true)
       const response: ResponseMessages = await request.get(
-        `/messages/${selectedConversation?._id}?page=${page}`,
+        `/messages/${selectedConversation?._id}?createdAt=${createdAt}`,
       )
       const { data: dataMessages, error } = response
       if (error) {
         toast.error(error)
         return []
       }
+      setFetching(false)
       return dataMessages || []
     } catch (error) {
       toast.error((error as ResponseError).message)
       return []
     } finally {
-      setLoading(false)
     }
   }
 
-  const loadMore = async (page: number) => {
-    const data = await fetchMessages(page)
+  const loadMore = async (createdAt: number, changeChat: boolean) => {
+    if (Number.isNaN(createdAt)) {
+      createdAt = new Date().getTime()
+    }
+    const data = await fetchMessages(createdAt)
     if (data.length < limit) {
       setHasMore(false)
     } else {
       setHasMore(true)
-      setPage(page + 1)
     }
-    setMessages(data)
+    if (changeChat) {
+      setMessages(data)
+    } else {
+      const total = [...data, ...messages]
+      setMessages(total)
+    }
   }
 
   useEffect(() => {
-    if (selectedConversation) {
-      setMessages([])
-      setHasMore(true)
-      setPage(1)
-      loadMore(1)
+    clearMessages()
+    setHasMore(true)
+    loadMore(new Date().getTime(), true)
+    return () => {
+      clearMessages()
     }
   }, [selectedConversation])
 
   return {
-    loading,
+    fetching,
     messages,
     hasMore,
     loadMore,
-    page,
   }
 }
 export default useGetMessages
