@@ -66,9 +66,9 @@ const Message = ({
   return (
     <div className="relative">
       <div className={`chat ${chatClassName}`}>
-        <div className={`chat-image avatar ${isOnline ? "online" : ""}`}>
+        <div className={`chat-image avatar  ${isOnline ? "online" : ""}`}>
           <div className={`w-10 rounded-full ring`}>
-            <img alt="Tailwind CSS chat bubble component" src={avatar} />
+            <img alt="avatar" src={avatar} />
           </div>
         </div>
         {!isSingleChat && (
@@ -88,7 +88,10 @@ const Message = ({
             {authUser?._id === message.senderId &&
               activeMessageId === message._id &&
               canWithdraw && (
-                <div className="absolute z-10 left-0" ref={withdrawRef}>
+                <div
+                  className="absolute z-10 left-0 bottom-0"
+                  ref={withdrawRef}
+                >
                   <button
                     className="btn btn-xs font-thin"
                     onClick={handleWithdraw}
@@ -102,7 +105,7 @@ const Message = ({
         </div>
         <div
           className={
-            "chat-footer z-[-1] opacity-50 text-xs text-gray-300 flex gap-1 items-center"
+            "chat-footer opacity-50 text-xs text-gray-300 flex items-center"
           }
         >
           {formattedTime}

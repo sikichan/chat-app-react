@@ -60,7 +60,7 @@ export const getMessages = async (req, res) => {
     })
       .limit(limit)
       .sort({ createdAt: -1 })
-    res.status(200).json(messages.reverse())
+    res.status(200).json(messages)
   } catch (e) {
     console.log("Error in MessageController.getMessages: ", e)
     res.status(500).json("Internal server error")

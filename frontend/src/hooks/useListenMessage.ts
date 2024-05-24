@@ -32,7 +32,7 @@ const useListenMessage = () => {
           selectedConversation._id,
         )
       ) {
-        setMessages([...messages, newMessage])
+        setMessages([newMessage, ...messages])
       }
     })
     // }

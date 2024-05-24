@@ -44,7 +44,7 @@ const useGetMessages = () => {
     if (changeChat) {
       setMessages(data)
     } else {
-      const total = [...data, ...messages]
+      const total = [...messages, ...data]
       setMessages(total)
     }
   }

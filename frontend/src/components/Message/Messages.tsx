@@ -7,31 +7,25 @@ import { MessageModel, ResponseError } from "@/types.ts"
 import useConversation from "@/zustand/useConversation.ts"
 import useSocketContext from "@/hooks/useSocketContext.ts"
 import useAuthContext from "@/hooks/useAuthContext.ts"
-import InfiniteScroll from "react-infinite-scroller"
+import InfiniteScroll from "react-infinite-scroll-component"
 
 const Messages = () => {
   const { messages, loadMore, hasMore, fetching } = useGetMessages()
   const [activeMessageId, setActiveMessageId] = useState("")
   const { socket } = useSocketContext()
   const { authUser } = useAuthContext()
-  const [loading, setLoading] = useState(true)
   const { setMessages, selectedConversation } = useConversation()
   const scrollParentRef = useRef<HTMLDivElement>(null)
   const [page, setPage] = useState<number>(0)
-  const lastMessageId = messages[messages.length - 1]
   const handleLoadMore = async () => {
     if (!scrollParentRef.current) return
-    if (loading && scrollParentRef.current.scrollTop > 0 && loading) return
-
+    const topMessage = messages[messages.length - 1]
+    if (!topMessage) return
     if (scrollParentRef.current.scrollTop === 0) {
-      setLoading((prev) => (prev ? prev : !prev))
       setPage((page) => page + 1)
-      if (hasMore && loading && !fetching) {
-        setLoading((prev) => (prev ? !prev : prev))
-        await loadMore(new Date(messages[0]?.createdAt).getTime(), false)
+      if (hasMore && !fetching) {
+        await loadMore(new Date(topMessage.createdAt).getTime(), false)
       }
-    } else {
-      setLoading((prev) => (prev ? !prev : prev))
     }
   }
 
@@ -53,11 +47,13 @@ const Messages = () => {
   useEffect(() => {
     if (messages.length === 0 || page > 0) return
     const lastMsg = document.createElement("div")
+    lastMsg.style.height = "10px"
     scrollParentRef.current?.appendChild(lastMsg)
     lastMsg.scrollIntoView({
       behavior: "smooth",
+      block: "start",
     })
-    setLoading((prev) => (prev ? !prev : prev))
+    // setLoading((prev) => (prev ? !prev : prev))
     return () => {
       scrollParentRef.current?.removeChild(lastMsg)
     }
@@ -86,24 +82,30 @@ const Messages = () => {
 
   return (
     <div
-      className="px-4 flex-1 overflow-auto"
+      id="scrollableDiv"
+      className="px-2 flex-1 overflow-auto"
       ref={scrollParentRef}
-      onScroll={handleLoadMore}
     >
       <InfiniteScroll
-        pageStart={0}
-        loadMore={handleLoadMore}
+        onScroll={handleLoadMore}
+        dataLength={messages.length}
+        next={handleLoadMore}
+        style={{ display: "flex", flexDirection: "column-reverse" }}
         hasMore={hasMore}
-        isReverse={true}
-        useWindow={false}
-        initialLoad={false}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+        scrollThreshold={0.95}
+        scrollableTarget="scrollableDiv"
         loader={
           <div
             className="flex items-center text-[11px] justify-center pt-2"
             key={0}
           >
             <span className="loading loading-spinner mr-2 text-sm" />
-            加载中...
+            Loading...
           </div>
         }
       >
