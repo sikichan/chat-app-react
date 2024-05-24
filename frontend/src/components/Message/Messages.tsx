@@ -64,16 +64,6 @@ const Messages = () => {
   }, [selectedConversation, messages])
 
   useEffect(() => {
-    const lastMsg = document.createElement("div")
-    scrollParentRef.current?.appendChild(lastMsg)
-    lastMsg.scrollIntoView({
-      behavior: "instant",
-    })
-    return () => {
-      scrollParentRef.current?.removeChild(lastMsg)
-    }
-  }, [lastMessageId])
-  useEffect(() => {
     setPage(0)
   }, [selectedConversation])
 
