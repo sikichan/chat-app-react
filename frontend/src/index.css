@@ -16,6 +16,8 @@
   --text-color: white;
   --text-color-dark: black;
   --selected-bg: #8677df;
+  --input-bg-dark: #121212;
+  --input-bg-light: #ffffff;
 }
 
 body {
@@ -36,6 +38,10 @@ body {
     color: var(--text-color-dark);
   }
   
+  .ChatTools {
+    background-color: var(--input-bg-light);
+  }
+  
   .selected-to-chat {
     background-color: var(--selected-bg);
   }
@@ -44,6 +50,10 @@ body {
 @media (prefers-color-scheme: dark) {
   .Home {
     background-image: var(--bg-color-dark);
+  }
+  
+  .ChatTools {
+    background-color: var(--input-bg-dark);
   }
   
   .selected-to-chat {
@@ -107,4 +117,9 @@ body {
 .reactEasyCrop_CropArea {
   /*border-radius: 50%;*/
   border: 2px dashed ghostwhite !important;
+}
+
+.chat-bubble {
+  max-width: 100% !important;
+  min-height: auto;
 }

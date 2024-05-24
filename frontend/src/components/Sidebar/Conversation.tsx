@@ -2,6 +2,7 @@ import { UserModel } from "@/types.ts"
 import reactLogo from "@/assets/react.svg"
 import useConversation from "@/zustand/useConversation.ts"
 import useSocketContext from "@/hooks/useSocketContext.ts"
+import RedDot from "@/components/RedDot/RedDot.tsx"
 
 type Props = {
   conversation: UserModel
@@ -39,7 +40,7 @@ const Conversation = ({ conversation, lastIndex }: Props) => {
         </div>
         <div className="flex justify-between items-center flex-1">
           <p className="font-bold ml-1">{fullName}</p>
-          <div>*</div>
+          <RedDot>99+</RedDot>
           {/*  todo: red dot*/}
         </div>
       </div>

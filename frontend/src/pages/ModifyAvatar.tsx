@@ -42,7 +42,7 @@ const ModifyAvatar = () => {
       }
       setAuthUser(data)
       localStorage.setItem("chat-user", JSON.stringify(data))
-      navigate(-1)
+      navigate("/", { replace: true })
     } catch (error) {
       console.log(error)
       toast.error((error as ResponseError).message)
@@ -58,7 +58,7 @@ const ModifyAvatar = () => {
   }
   const handleCancel = () => {
     setLocalImage("")
-    navigate(-1)
+    navigate("/", { replace: true })
   }
 
   return (

@@ -22,12 +22,12 @@ const useGetMessages = () => {
         toast.error(error)
         return []
       }
-      setFetching(false)
       return dataMessages || []
     } catch (error) {
       toast.error((error as ResponseError).message)
       return []
     } finally {
+      setFetching(false)
     }
   }
 

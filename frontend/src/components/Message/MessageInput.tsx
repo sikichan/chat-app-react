@@ -1,27 +1,45 @@
 import React, { useEffect, useRef, useState } from "react"
 import useSendMessage from "@/hooks/useSendMessage"
 import useConversation from "@/zustand/useConversation.ts"
-import EmojiPicker from "emoji-picker-react"
-import { MdOutlineEmojiEmotions } from "react-icons/md"
-import { BsFillSendArrowUpFill } from "react-icons/bs"
+import ChatTools from "@/components/ChatTools/ChatTools.tsx"
 
 const MessageInput = () => {
   const [message, setMessage] = useState("")
-  const { loading, sendMessage } = useSendMessage()
+  const { sendMessage } = useSendMessage()
   const { selectedConversation } = useConversation()
-  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false)
-  const ref = useRef<HTMLInputElement>(null)
+  const [selectionStart, setSelectionStart] = useState(0)
+  const ref = useRef<HTMLTextAreaElement>(null)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    await handleSend()
+  }
+  const handleSend = async () => {
     if (!message.trim()) return
-    await sendMessage(message)
+    await sendMessage(message.trim())
     setMessage("")
   }
-  const handleEmojiClick = ({ emoji }: { emoji: string }) => {
-    setMessage((prev) => prev.concat(emoji))
-    setShowEmojiPicker(false)
-    ref.current?.focus()
+  const handleEmojiClick = (emoji: string) => {
+    if (!ref.current) return
+    const cursorPosition = ref.current.selectionStart
+    setSelectionStart(cursorPosition)
+    setMessage((prev) => {
+      return prev.slice(0, cursorPosition) + emoji + prev.slice(cursorPosition)
+    })
+    ref.current!.focus()
+    ref.current!.setSelectionRange(selectionStart + 2, selectionStart + 2)
   }
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value)
+  }
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.code === "Enter" && !e.shiftKey) {
+      await handleSend()
+    }
+  }
+  useEffect(() => {
+    ref.current!.focus()
+    ref.current!.setSelectionRange(selectionStart + 2, selectionStart + 2)
+  }, [selectionStart])
   useEffect(() => {
     if (ref.current) {
       ref.current.focus()
@@ -30,39 +48,27 @@ const MessageInput = () => {
 
   return (
     <form className="px-4" onSubmit={handleSubmit}>
-      <div className={`${showEmojiPicker ? "" : "hidden"}`}>
-        <EmojiPicker
-          lazyLoadEmojis={true}
-          autoFocusSearch={false}
-          onEmojiClick={handleEmojiClick}
-        />
-      </div>
       <div className="w-full relative">
         <div className="relative">
-          <MdOutlineEmojiEmotions
-            className="absolute h-full w-[38px] pl-2 cursor-pointer text-orange hover:text-yellow"
-            onClick={() => setShowEmojiPicker((prev) => !prev)}
-          />
-          <input
-            type="text"
-            className="border text-md rounded-lg block w-full p-3 border-gray-600 px-9"
-            placeholder="Send a message"
+          <ChatTools getEmoji={handleEmojiClick} />
+          <textarea
+            className="text-md rounded-lg w-full p-2 outline-0 outline-none resize-none"
             ref={ref}
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
           />
         </div>
-
-        <button
-          type="submit"
-          className="absolute inset-y-0 end-0 flex items-center pe-3"
-        >
-          {loading ? (
-            <div className="loading loading-spinner"></div>
-          ) : (
-            <BsFillSendArrowUpFill className="w-[40px] text-dark-green hover:text-green" />
-          )}
-        </button>
+        {/*<button*/}
+        {/*  type="submit"*/}
+        {/*  className="absolute bottom-2 right-2 flex items-center"*/}
+        {/*>*/}
+        {/*  {loading ? (*/}
+        {/*    <div className="loading loading-spinner"></div>*/}
+        {/*  ) : (*/}
+        {/*    <BsFillSendArrowUpFill className="" />*/}
+        {/*  )}*/}
+        {/*</button>*/}
       </div>
     </form>
   )
