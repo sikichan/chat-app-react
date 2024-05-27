@@ -47,11 +47,12 @@ const useGetMessages = () => {
       const total = [...messages, ...data]
       setMessages(total)
     }
+    return !(data.length < limit)
   }
 
   useEffect(() => {
     clearMessages()
-    setHasMore(true)
+    // setHasMore(true)
     loadMore(new Date().getTime(), true)
     return () => {
       clearMessages()

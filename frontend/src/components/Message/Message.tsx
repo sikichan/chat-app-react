@@ -67,7 +67,7 @@ const Message = ({
     <div className="relative">
       <div className={`chat ${chatClassName}`}>
         <div className={`chat-image avatar  ${isOnline ? "online" : ""}`}>
-          <div className={`w-10 rounded-full ring`}>
+          <div className={`w-10 rounded-full`}>
             <img alt="avatar" src={avatar} />
           </div>
         </div>

@@ -23,6 +23,7 @@
     "react-router-dom": "^6.23.0",
     "socket.io-client": "^4.7.5",
     "styled-components": "^6.1.11",
+    "throttle-debounce": "^5.0.0",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
@@ -30,6 +31,7 @@
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@types/react-infinite-scroller": "^1.2.5",
+    "@types/throttle-debounce": "^5.0.2",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",

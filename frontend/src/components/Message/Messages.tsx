@@ -8,6 +8,7 @@ import useConversation from "@/zustand/useConversation.ts"
 import useSocketContext from "@/hooks/useSocketContext.ts"
 import useAuthContext from "@/hooks/useAuthContext.ts"
 import InfiniteScroll from "react-infinite-scroll-component"
+import { throttle } from "@/utils/throttle-debounce.ts"
 
 const Messages = () => {
   const { messages, loadMore, hasMore, fetching } = useGetMessages()
@@ -16,15 +17,20 @@ const Messages = () => {
   const { authUser } = useAuthContext()
   const { setMessages, selectedConversation } = useConversation()
   const scrollParentRef = useRef<HTMLDivElement>(null)
-  const [page, setPage] = useState<number>(0)
+  const lastRef = useRef<HTMLDivElement>(null)
+  const bottomMsg = messages[0]
+  const [parentScrollTop, setParentScrollTop] = useState<number>(0)
   const handleLoadMore = async () => {
     if (!scrollParentRef.current) return
     const topMessage = messages[messages.length - 1]
     if (!topMessage) return
     if (scrollParentRef.current.scrollTop === 0) {
-      setPage((page) => page + 1)
       if (hasMore && !fetching) {
-        await loadMore(new Date(topMessage.createdAt).getTime(), false)
+        const hasMore = await loadMore(
+          new Date(topMessage.createdAt).getTime(),
+          false,
+        )
+        if (hasMore) scrollParentRef.current.scrollTop = parentScrollTop
       }
     }
   }
@@ -43,25 +49,25 @@ const Messages = () => {
       toast.error((error as ResponseError).message)
     }
   }
-
   useEffect(() => {
-    if (messages.length === 0 || page > 0) return
-    const lastMsg = document.createElement("div")
-    lastMsg.style.height = "10px"
-    scrollParentRef.current?.appendChild(lastMsg)
-    lastMsg.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    })
-    // setLoading((prev) => (prev ? !prev : prev))
-    return () => {
-      scrollParentRef.current?.removeChild(lastMsg)
-    }
-  }, [selectedConversation, messages])
+    if (!scrollParentRef.current || !bottomMsg) return
+    scrollParentRef.current.scrollTop = scrollParentRef.current.scrollHeight
+    setParentScrollTop(scrollParentRef.current.scrollTop)
+  }, [selectedConversation, bottomMsg])
 
-  useEffect(() => {
-    setPage(0)
-  }, [selectedConversation])
+  // useEffect(() => {
+  //   if (!scrollParentRef.current || !messages.length) return
+  //   const notAtBottom = !(
+  //     scrollParentRef.current.scrollTop >=
+  //     scrollParentRef.current.scrollHeight -
+  //       scrollParentRef.current.clientHeight
+  //   )
+  //   if (notAtBottom) {
+  //     // 滚动条不在底部
+  //     console.log("滚动条不在底部")
+  //     scrollParentRef.current.scrollTop = scrollParentRef.current.scrollHeight
+  //   }
+  // }, [messages])
 
   useEffect(() => {
     socket?.on("withdraw-message", (deletedMessage: MessageModel) => {
@@ -87,40 +93,28 @@ const Messages = () => {
       ref={scrollParentRef}
     >
       <InfiniteScroll
-        onScroll={handleLoadMore}
+        onScroll={throttle(handleLoadMore)}
         dataLength={messages.length}
-        next={handleLoadMore}
+        next={throttle(handleLoadMore)}
         style={{ display: "flex", flexDirection: "column-reverse" }}
         hasMore={hasMore}
-        endMessage={
-          <p style={{ textAlign: "center" }}>
-            <b>Yay! You have seen it all</b>
-          </p>
-        }
-        scrollThreshold={0.95}
+        endMessage={<p className="text-center">没有更多消息了</p>}
+        scrollThreshold={0.9}
         scrollableTarget="scrollableDiv"
-        loader={
-          <div
-            className="flex items-center text-[11px] justify-center pt-2"
-            key={0}
-          >
-            <span className="loading loading-spinner mr-2 text-sm" />
-            Loading...
-          </div>
-        }
+        loader={<p className="text-center">加载中...</p>}
       >
         {messages.map((message) => (
-          <div key={message._id}>
-            <Message
-              message={message}
-              isSingleChat={true}
-              onWithdraw={handleWithdraw}
-              activeMessageId={activeMessageId}
-              setActiveMessageId={setActiveMessageId}
-            />
-          </div>
+          <Message
+            key={message._id}
+            message={message}
+            isSingleChat={true}
+            onWithdraw={handleWithdraw}
+            activeMessageId={activeMessageId}
+            setActiveMessageId={setActiveMessageId}
+          />
         ))}
       </InfiniteScroll>
+      <div ref={lastRef}></div>
     </div>
   )
 }
