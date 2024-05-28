@@ -7,11 +7,11 @@ export const signup = async (req, res) => {
   try {
     const { fullName, username, password, confirmedPassword, gender } = req.body
     if (password !== confirmedPassword) {
-      return res.status(400).json({ error: "Passwords do not match" })
+      return res.status(400).json("Passwords do not match")
     }
     const user = await User.findOne({ username })
     if (user) {
-      return res.status(400).json({ error: "Username already exists" })
+      return res.status(400).json("Username already exists")
     }
     // https://avatar.iran.liara.run/public/boy?username=sikichan
     const genderScope = gender === "boy" ? "boy" : "girl"
@@ -35,24 +35,24 @@ export const signup = async (req, res) => {
         avatar: newUser.avatar,
         gender: newUser.gender,
       }
-      // socket new-user
-      io.emit("new-user", data)
+      // socket new-conversation
+      io.emit("new-conversation", data)
       res.status(201).json(data)
     } else {
-      res.status(400).json({ error: "Invalid user data" })
+      res.status(400).json("Invalid user data")
     }
   } catch (e) {
-    res.status(500).json({ error: `Internal Server Error: ${e}` })
+    res.status(500).json(`Internal Server Error: ${e}`)
   }
 }
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body
-    const user = await User.findOne({ username })
-    if (!user) return res.status(400).json({ error: "Username not exists" })
+    const user = await User.findOne({ username }).exec()
+    if (!user) return res.status(400).json("Username not exists")
     const passwordIsCorrect = await bcrypt.compare(password, user.password)
     if (!passwordIsCorrect) {
-      return res.status(400).json({ error: "Invalid Password" })
+      return res.status(400).json("Invalid Password")
     } else {
       generateJWTAndSetCookie(user._id, res)
       res.status(200).json({
@@ -63,7 +63,7 @@ export const login = async (req, res) => {
       })
     }
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json(error)
   }
 }
 export const logout = async (req, res) => {
@@ -74,6 +74,6 @@ export const logout = async (req, res) => {
     })
     res.status(200).json({ message: "Logged out successfully" })
   } catch (e) {
-    res.status(500).json({ error: "Internal Server Error" })
+    res.status(500).json("Internal Server Error")
   }
 }

@@ -6,6 +6,7 @@ const ConversationSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        required: true,
       },
     ],
     messages: [
@@ -15,7 +16,16 @@ const ConversationSchema = new mongoose.Schema(
         default: [],
       },
     ],
-    isGroup: [],
+    isGroup: {
+      type: Boolean,
+    },
+    groupName: {
+      type: String,
+    },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true },
 )

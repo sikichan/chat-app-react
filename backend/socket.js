@@ -22,6 +22,15 @@ io.on("connection", (socket) => {
   }
   console.info(`UserSocketMap:`, UserSocketMap)
   io.emit("online-users", Object.keys(UserSocketMap))
+
+  socket.on("join-room", (groupId) => {
+    socket.join(groupId)
+    console.log(socket.id, "join room", groupId)
+  })
+  socket.on("leave-room", (groupId) => {
+    socket.leave(groupId)
+    console.log(socket.id, "user leave room", groupId)
+  })
   socket.on("disconnect", () => {
     console.log("user disconnected", socket.id)
     delete UserSocketMap[userId]
