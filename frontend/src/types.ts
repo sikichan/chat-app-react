@@ -11,12 +11,13 @@ export interface SignupUser extends LoginUser {
 
 export type MessageModel = {
   _id: string
-  senderId: string
+  senderId: UserModel
   receiverId: string
   message: object | string
   messageType: MessageType
   shouldShake: boolean | undefined
   createdAt: Date | string | number
+  groupId?: string
 }
 
 export type UserModel = {
@@ -25,6 +26,11 @@ export type UserModel = {
   username: string
   avatar: string
   gender: "boy" | "girl"
+}
+export type ConversationModel = UserModel & {
+  owner?: string
+  isGroup?: boolean
+  groupName?: string
 }
 
 export enum MessageType {
@@ -41,5 +47,7 @@ export type ResponseError = {
 }
 export type ResponseMessages = {
   data: MessageModel[]
-  error?: string
+}
+export type ResponseUsers = {
+  data: UserModel[]
 }

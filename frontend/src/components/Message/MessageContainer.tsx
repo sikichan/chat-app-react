@@ -16,7 +16,7 @@ const MessageContainer = () => {
         <>
           <div className="px-4 py-2 mb-2 rounded flex items-center gap-2">
             <span className="text-gray-200 font-bold flex-1">
-              {selectedConversation.fullName}
+              {selectedConversation.fullName || selectedConversation.groupName}
             </span>
           </div>
           <Messages />

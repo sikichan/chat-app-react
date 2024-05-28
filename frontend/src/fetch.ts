@@ -18,7 +18,7 @@ service.interceptors.response.use(
     return response
   },
   ({ response }) => {
-    console.log("response", response.status)
+    console.log("response", response)
     if (response.status === 401) {
       localStorage.removeItem("chat-user")
       setTimeout(() => {
@@ -27,7 +27,7 @@ service.interceptors.response.use(
     }
     return Promise.reject({
       status: response.status,
-      message: response.data?.error,
+      message: response.data || response.statusText,
     })
   },
 )

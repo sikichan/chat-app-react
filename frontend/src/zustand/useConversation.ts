@@ -1,9 +1,9 @@
 import { create } from "zustand"
-import { MessageModel, UserModel } from "@/types.ts"
+import { ConversationModel, MessageModel } from "@/types.ts"
 import { devtools } from "zustand/middleware"
 
 type State = {
-  selectedConversation: UserModel | null
+  selectedConversation: ConversationModel | null
   messages: MessageModel[]
 }
 type Action = {

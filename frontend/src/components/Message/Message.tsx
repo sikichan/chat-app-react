@@ -21,9 +21,13 @@ const Message = ({
 }: Props) => {
   const { authUser } = useAuthContext()
   const { selectedConversation } = useConversation()
-  const fromMe = message.senderId === authUser?._id
+  const fromMe = message.senderId._id === authUser?._id
   const chatClassName = fromMe ? "chat-end" : "chat-start"
-  const avatar = fromMe ? authUser?.avatar : selectedConversation?.avatar
+  const avatar = fromMe
+    ? authUser?.avatar
+    : isSingleChat
+      ? selectedConversation?.avatar
+      : message.senderId?.avatar
   const bubbleBgColor = fromMe ? "bg-green" : ""
   const shakeClass = message.shouldShake ? "shake" : ""
   const msgRef = useRef<HTMLDivElement | null>(null)
@@ -73,7 +77,7 @@ const Message = ({
         </div>
         {!isSingleChat && (
           <div className="chat-header text-gray-300">
-            {fromMe ? "me" : selectedConversation?.fullName}
+            {fromMe ? "me" : message.senderId.fullName}
           </div>
         )}
         <div className="relative">
@@ -85,7 +89,7 @@ const Message = ({
             ref={msgRef}
           >
             {message.message as string}
-            {authUser?._id === message.senderId &&
+            {authUser?._id === message.senderId._id &&
               activeMessageId === message._id &&
               canWithdraw && (
                 <div

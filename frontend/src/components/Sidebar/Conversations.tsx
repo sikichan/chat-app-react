@@ -1,6 +1,6 @@
 import Conversation from "./Conversation.tsx"
 import useGetConversations from "@/hooks/useGetConversations.ts"
-import { UserModel } from "@/types.ts"
+import { ConversationModel } from "@/types.ts"
 import useSocketContext from "@/hooks/useSocketContext.ts"
 import { useEffect } from "react"
 
@@ -20,10 +20,10 @@ const Conversations = ({ searchKeyword }: { searchKeyword: string }) => {
           ),
         )
       })
-      socket.on("new-user", (newUser: UserModel) => {
+      socket.on("new-conversation", (newUser: ConversationModel) => {
         console.log("new user", newUser)
         setConversations((conversations) => {
-          return [...conversations, newUser]
+          return [newUser, ...conversations]
         })
       })
     }
@@ -34,13 +34,15 @@ const Conversations = ({ searchKeyword }: { searchKeyword: string }) => {
         <span className="loading loading-dots loading-lg"></span>
       ) : (
         <div className="py-2 flex flex-col overflow-auto">
-          {conversations.map((conversation: UserModel, index: number) => (
-            <Conversation
-              conversation={conversation}
-              lastIndex={index === conversations.length - 1}
-              key={conversation._id}
-            />
-          ))}
+          {conversations.map(
+            (conversation: ConversationModel, index: number) => (
+              <Conversation
+                conversation={conversation}
+                lastIndex={index === conversations.length - 1}
+                key={conversation._id}
+              />
+            ),
+          )}
         </div>
       )}
     </div>

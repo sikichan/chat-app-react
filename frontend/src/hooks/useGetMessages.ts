@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { request } from "@/fetch.ts"
 import toast from "react-hot-toast"
 import useConversation from "@/zustand/useConversation.ts"
-import { ResponseError, ResponseMessages } from "@/types.ts"
+import { MessageModel, ResponseError, ResponseMessages } from "@/types.ts"
 
 const limit = 10
 const useGetMessages = () => {
@@ -11,17 +11,18 @@ const useGetMessages = () => {
   const { selectedConversation, messages, setMessages, clearMessages } =
     useConversation()
 
-  const fetchMessages = async (createdAt: number) => {
+  const fetchMessages = async (createdAt: number): Promise<MessageModel[]> => {
     try {
       setFetching(true)
+      if (!selectedConversation) return []
+      const url = `/messages/${selectedConversation._id}?createdAt=${createdAt}`
       const response: ResponseMessages = await request.get(
-        `/messages/${selectedConversation?._id}?createdAt=${createdAt}`,
+        selectedConversation.isGroup
+          ? `${url}&isGroup=${selectedConversation.isGroup}`
+          : url,
       )
-      const { data: dataMessages, error } = response
-      if (error) {
-        toast.error(error)
-        return []
-      }
+      const { data: dataMessages } = response
+
       return dataMessages || []
     } catch (error) {
       toast.error((error as ResponseError).message)

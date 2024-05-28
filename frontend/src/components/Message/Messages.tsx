@@ -17,7 +17,6 @@ const Messages = () => {
   const { authUser } = useAuthContext()
   const { setMessages, selectedConversation } = useConversation()
   const scrollParentRef = useRef<HTMLDivElement>(null)
-  const lastRef = useRef<HTMLDivElement>(null)
   const bottomMsg = messages[0]
   const [parentScrollTop, setParentScrollTop] = useState<number>(0)
   const handleLoadMore = async () => {
@@ -38,11 +37,12 @@ const Messages = () => {
   const handleWithdraw = async (id: string, selectedConversationId: string) => {
     try {
       const { data } = await request.delete(`/messages/withdraw/${id}`, {
-        params: { receiverId: selectedConversationId },
+        params: {
+          receiverId: selectedConversationId,
+          isGroup: selectedConversation?.isGroup,
+          groupId: selectedConversationId,
+        },
       })
-      if (data.error) {
-        return toast.error(data.error)
-      }
       setMessages(messages.filter((m) => m._id !== data.id))
       toast.success("消息撤回成功")
     } catch (error) {
@@ -50,33 +50,37 @@ const Messages = () => {
     }
   }
   useEffect(() => {
+    if (selectedConversation?.isGroup) {
+      socket?.emit("join-room", selectedConversation?._id)
+    }
+    return () => {
+      socket?.off("join-room")
+      socket?.emit("leave-room", selectedConversation?._id)
+    }
+  }, [selectedConversation])
+  useEffect(() => {
     if (!scrollParentRef.current || !bottomMsg) return
     scrollParentRef.current.scrollTop = scrollParentRef.current.scrollHeight
     setParentScrollTop(scrollParentRef.current.scrollTop)
   }, [selectedConversation, bottomMsg])
 
-  // useEffect(() => {
-  //   if (!scrollParentRef.current || !messages.length) return
-  //   const notAtBottom = !(
-  //     scrollParentRef.current.scrollTop >=
-  //     scrollParentRef.current.scrollHeight -
-  //       scrollParentRef.current.clientHeight
-  //   )
-  //   if (notAtBottom) {
-  //     // 滚动条不在底部
-  //     console.log("滚动条不在底部")
-  //     scrollParentRef.current.scrollTop = scrollParentRef.current.scrollHeight
-  //   }
-  // }, [messages])
-
   useEffect(() => {
     socket?.on("withdraw-message", (deletedMessage: MessageModel) => {
       if (
+        !selectedConversation?.isGroup &&
         deletedMessage.receiverId === authUser!._id &&
-        deletedMessage.senderId === selectedConversation!._id
+        deletedMessage.senderId._id === selectedConversation!._id
       ) {
         setMessages(messages.filter((m) => m._id !== deletedMessage._id))
         toast("对方撤回了一条消息", {
+          icon: "👈",
+        })
+      } else if (
+        selectedConversation?.isGroup &&
+        deletedMessage.senderId._id !== authUser?._id
+      ) {
+        setMessages(messages.filter((m) => m._id !== deletedMessage._id))
+        toast(`${deletedMessage.senderId.fullName}撤回了一条消息`, {
           icon: "👈",
         })
       }
@@ -98,7 +102,9 @@ const Messages = () => {
         next={throttle(handleLoadMore)}
         style={{ display: "flex", flexDirection: "column-reverse" }}
         hasMore={hasMore}
-        endMessage={<p className="text-center">没有更多消息了</p>}
+        endMessage={
+          <p className="text-center mb-2 text-xs">-- 没有更多消息了 --</p>
+        }
         scrollThreshold={0.9}
         scrollableTarget="scrollableDiv"
         loader={<p className="text-center">加载中...</p>}
@@ -107,14 +113,13 @@ const Messages = () => {
           <Message
             key={message._id}
             message={message}
-            isSingleChat={true}
+            isSingleChat={!selectedConversation?.isGroup}
             onWithdraw={handleWithdraw}
             activeMessageId={activeMessageId}
             setActiveMessageId={setActiveMessageId}
           />
         ))}
       </InfiniteScroll>
-      <div ref={lastRef}></div>
     </div>
   )
 }

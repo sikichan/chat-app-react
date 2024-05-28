@@ -10,15 +10,17 @@ const useSendMessage = () => {
   const sendMessage = async (message: object | string) => {
     try {
       setLoading(true)
-      const { data } = await request.post(
-        `/messages/send/${selectedConversation?._id}`,
-        {
+      if (selectedConversation?.isGroup) {
+        await request.post(`/messages/sendInGroup`, {
+          id: selectedConversation._id,
           message: message,
           MessageType: MessageType.text,
-        },
-      )
-      if (data.error) {
-        toast.error(data.error)
+        })
+      } else {
+        await request.post(`/messages/send/${selectedConversation?._id}`, {
+          message: message,
+          MessageType: MessageType.text,
+        })
       }
     } catch (error) {
       toast.error((error as ResponseError).message)

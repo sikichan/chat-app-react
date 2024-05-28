@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import { ResponseError, UserModel } from "@/types.ts"
+import { ConversationModel, ResponseError, UserModel } from "@/types.ts"
 import { request } from "@/fetch.ts"
 
 const useGetConversations = ({
@@ -11,7 +11,7 @@ const useGetConversations = ({
   needFetch: boolean
 }) => {
   const [loading, setLoading] = useState(true)
-  const [conversations, setConversations] = useState<UserModel[]>([])
+  const [conversations, setConversations] = useState<ConversationModel[]>([])
   const fetchConversations = async () => {
     try {
       setLoading(true)
@@ -33,11 +33,15 @@ const useGetConversations = ({
 
   const filteredConversations =
     searchKeyword?.trim() !== ""
-      ? conversations.filter((conversation) =>
-          conversation.fullName
-            .toLowerCase()
-            .includes(searchKeyword.toLowerCase()),
-        )
+      ? conversations.filter((conversation) => {
+          return conversation.isGroup
+            ? conversation
+                .groupName!.toLowerCase()
+                .includes(searchKeyword.toLowerCase())
+            : conversation.fullName
+                .toLowerCase()
+                .includes(searchKeyword.toLowerCase())
+        })
       : conversations
 
   return {

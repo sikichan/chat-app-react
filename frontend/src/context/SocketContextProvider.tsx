@@ -38,6 +38,7 @@ const SocketProvider = ({ children }: PropsWithChildren) => {
         console.log("onlineUsers", onlineUsers)
         setOnlineUsers(onlineUsers)
       })
+
       return () => {
         socket.close()
         setSocket(null)

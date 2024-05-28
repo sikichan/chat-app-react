@@ -106,14 +106,13 @@ const ImageCropper = ({
           croppedHeight,
         )
         const quality = 1 / (croppedWidth / 200)
-
         croppedCanvas.toBlob(
           (blob) => {
             if (blob) {
               onCrop(blob)
             }
           },
-          "image/jpeg",
+          "image/webp",
           quality,
         )
       }
@@ -122,17 +121,12 @@ const ImageCropper = ({
       console.log(error)
     }
   }
-
   useEffect(() => {
     const calculateSize = async () => {
       setLoading(true)
       const containerRect = containerRef.current?.getBoundingClientRect()
       if (!containerRect) return
-      await loadImage(
-        imageSrc,
-        containerRect.width * (9 * 16),
-        containerRect.height * (9 * 16),
-      )
+      await loadImage(imageSrc, containerRect.width, containerRect.height)
       // const isPortrait = orientation === "portrait"
       // setSize({ width, height: isPortrait ? width : height })
       setLoading(false)

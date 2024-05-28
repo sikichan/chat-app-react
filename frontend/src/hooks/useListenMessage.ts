@@ -9,11 +9,18 @@ import toast from "react-hot-toast"
 const useListenMessage = () => {
   const { socket } = useSocketContext()
   const { messages, setMessages, selectedConversation } = useConversation()
+  const isGroup = selectedConversation?.isGroup
   const { authUser } = useAuthContext()
   useEffect(() => {
+    socket?.on("new-message-group", (newMessage: MessageModel) => {
+      console.log("authUser", authUser, newMessage.senderId)
+
+      if (newMessage.groupId === selectedConversation?._id) {
+        setMessages([newMessage, ...messages])
+      }
+    })
     socket?.on("new-message", (newMessage: MessageModel) => {
-      if (newMessage.senderId === selectedConversation?._id) {
-        // in chatting
+      if (newMessage.senderId._id === selectedConversation?._id) {
         newMessage.shouldShake = true
       }
       if (newMessage.receiverId === authUser?._id) {
@@ -26,13 +33,15 @@ const useListenMessage = () => {
           icon: "👏",
         })
       }
-      if (
-        selectedConversation &&
-        [newMessage.senderId, newMessage.receiverId].includes(
-          selectedConversation._id,
-        )
-      ) {
-        setMessages([newMessage, ...messages])
+      if (selectedConversation) {
+        if (
+          !isGroup &&
+          [newMessage.senderId._id, newMessage.receiverId].includes(
+            selectedConversation._id,
+          )
+        ) {
+          setMessages([newMessage, ...messages])
+        }
       }
     })
     // }
