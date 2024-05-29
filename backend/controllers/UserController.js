@@ -1,6 +1,6 @@
 import User from "../models/UserModel.js"
 import { getDataUrl } from "../utils/file.js"
-import { io } from "../socket.js"
+import { getSocketIdByUserId, io } from "../socket.js"
 import Conversation from "../models/ConversationModel.js"
 
 export const getUsersForSidebar = async (req, res) => {
@@ -14,9 +14,7 @@ export const getUsersForSidebar = async (req, res) => {
       isGroup: true,
       $or: [{ owner: currentUser }, { members: { $all: [currentUser] } }],
     })
-    const results = [...users, ...groups].sort((a, b) =>
-      a.createdAt.getTime() - b.createdAt.getTime() > 0 ? -1 : 1,
-    )
+    const results = [...groups, ...users]
     res.status(200).json(results)
   } catch (e) {
     res.status(500).json("Internal server error")
@@ -28,7 +26,7 @@ export const newGroupChat = async (req, res) => {
     const { memberIds, groupName } = req.body
     const groups = await Conversation.find({ owner: ownerId }).exec()
     if (groups.length === 3) {
-      return res.status(400).json("每人最多只能创建3个群聊")
+      return res.status(400).json("每人最多只能新建3个群聊")
     }
     const conversation = new Conversation({
       owner: ownerId,
@@ -39,7 +37,10 @@ export const newGroupChat = async (req, res) => {
     if (conversation) {
       await conversation.save()
       // socket new-conversation
-      io.emit("new-conversation", conversation)
+      conversation.members.forEach((id) => {
+        const socketId = getSocketIdByUserId(id)
+        if (socketId) io.to(socketId).emit("new-conversation", conversation)
+      })
       res.status(200).json(conversation)
     } else {
       res.status(500).json("Internal server error")

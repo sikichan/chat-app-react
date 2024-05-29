@@ -16,8 +16,7 @@ const UserSelector = ({
       setLoading(true)
       try {
         const res: ResponseUsers = await request.get("/users/forSelector")
-        const { data, error } = res
-        if (res.error) throw error
+        const { data } = res
         setUsers(data)
       } catch (e) {
         console.log(e as Error)
@@ -70,7 +69,7 @@ const UserSelector = ({
           onClick={handleSubmit}
           disabled={loading || selectedUsers.length < 2}
         >
-          Submit
+          新建群聊
         </button>
       </div>
     </>

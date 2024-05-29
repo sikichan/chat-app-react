@@ -39,7 +39,7 @@ const NewGroup = () => {
     <>
       <div
         className="tooltip tooltip-bottom p-0"
-        data-tip="创建群聊"
+        data-tip="新建群聊"
         onClick={() => selectorDialogRef.current?.showModal()}
       >
         <IoIosAddCircleOutline className="text-[1.4rem]" />
@@ -49,7 +49,7 @@ const NewGroup = () => {
       ) : (
         <dialog id="selectorDialog" ref={selectorDialogRef} className="modal">
           <div className="modal-box">
-            <h3 className="font-bold text-md mb-2">创建群聊</h3>
+            <h3 className="font-bold text-md mb-2">新建群聊</h3>
             <input
               type="text"
               placeholder={"请输入群聊名称"}
