@@ -8,22 +8,24 @@ import useAuthContext from "@/hooks/useAuthContext.ts"
 
 const NewGroup = () => {
   const [loading, setLoading] = useState(false)
+  const [groupName, setGroupName] = useState("")
   const selectorDialogRef = useRef<HTMLDialogElement>(null)
   const { authUser } = useAuthContext()
   const handleSubmit = async (selectedUsers: UserModel[]) => {
     console.log(selectedUsers)
     setLoading(true)
     try {
-      const groupName =
+      const name =
+        groupName.trim() ||
         authUser?.fullName +
-        "," +
-        selectedUsers
-          .map((user) => user.fullName)
-          .slice(0, 2)
-          .join(",") +
-        "...等人的群聊"
+          "," +
+          selectedUsers
+            .map((user) => user.fullName)
+            .slice(0, 2)
+            .join(",") +
+          "...等人的群聊"
       await request.post("/users/newGroupChat", {
-        groupName,
+        groupName: name,
         memberIds: selectedUsers.map((user) => user._id),
       })
       selectorDialogRef.current?.close()
@@ -37,7 +39,7 @@ const NewGroup = () => {
     <>
       <div
         className="tooltip tooltip-bottom p-0"
-        data-tip="New Group"
+        data-tip="创建群聊"
         onClick={() => selectorDialogRef.current?.showModal()}
       >
         <IoIosAddCircleOutline className="text-[1.4rem]" />
@@ -47,7 +49,14 @@ const NewGroup = () => {
       ) : (
         <dialog id="selectorDialog" ref={selectorDialogRef} className="modal">
           <div className="modal-box">
-            <h3 className="font-bold text-md">请选择用户加入群聊</h3>
+            <h3 className="font-bold text-md mb-2">创建群聊</h3>
+            <input
+              type="text"
+              placeholder={"请输入群聊名称"}
+              className="input input-bordered p-2 h-8"
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
+            />
             <div className="py-4">
               <UserSelector onSubmit={handleSubmit} />
             </div>

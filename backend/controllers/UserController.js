@@ -27,8 +27,8 @@ export const newGroupChat = async (req, res) => {
     const ownerId = req.user._id.toString()
     const { memberIds, groupName } = req.body
     const groups = await Conversation.find({ owner: ownerId }).exec()
-    if (groups.length >= 5) {
-      return res.status(400).json("每人最多只能创建5个群组")
+    if (groups.length === 3) {
+      return res.status(400).json("每人最多只能创建3个群聊")
     }
     const conversation = new Conversation({
       owner: ownerId,
