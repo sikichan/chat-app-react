@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { startTransition, useEffect, useState } from "react"
 import { request } from "@/fetch.ts"
 import useConversation from "@/zustand/useConversation.ts"
 import { MessageModel, ResponseMessages } from "@/types.ts"
@@ -48,10 +48,10 @@ const useGetMessages = () => {
       setHasMore(true)
     }
     if (changeChat) {
-      setMessages(data)
+      startTransition(() => setMessages(data))
     } else {
       const total = [...messages, ...data]
-      setMessages(total)
+      startTransition(() => setMessages(total))
     }
     return !(data.length < limit)
   }
