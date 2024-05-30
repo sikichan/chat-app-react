@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react"
 import { request } from "@/fetch.ts"
-import toast from "react-hot-toast"
 import useConversation from "@/zustand/useConversation.ts"
-import { MessageModel, ResponseError, ResponseMessages } from "@/types.ts"
+import { MessageModel, ResponseMessages } from "@/types.ts"
 
 const limit = 10
 const useGetMessages = () => {
   const [fetching, setFetching] = useState<boolean>(false)
   const [hasMore, setHasMore] = useState<boolean>(false)
+  const [abortController, setAbortController] =
+    useState<AbortController | null>(null)
   const { selectedConversation, messages, setMessages, clearMessages } =
     useConversation()
 
@@ -15,17 +16,21 @@ const useGetMessages = () => {
     try {
       setFetching(true)
       if (!selectedConversation) return []
+      if (abortController) abortController.abort()
       const url = `/messages/${selectedConversation._id}?createdAt=${createdAt}`
+      const newAbortController = new AbortController()
+      setAbortController(newAbortController)
       const response: ResponseMessages = await request.get(
         selectedConversation.isGroup
           ? `${url}&isGroup=${selectedConversation.isGroup}`
           : url,
+        { signal: newAbortController.signal },
       )
       const { data: dataMessages } = response
-
       return dataMessages || []
     } catch (error) {
-      toast.error((error as ResponseError).message)
+      // toast.error((error as ResponseError).message)
+      console.log("error", error)
       return []
     } finally {
       setFetching(false)

@@ -19,6 +19,10 @@ service.interceptors.response.use(
   },
   ({ response }) => {
     console.log("response", response)
+    if (!response) {
+      console.log("cancel request")
+      return response
+    }
     if (response.status === 401) {
       localStorage.removeItem("chat-user")
       setTimeout(() => {

@@ -31,6 +31,7 @@ export type ConversationModel = UserModel & {
   owner?: string
   isGroup?: boolean
   groupName?: string
+  members?: string[]
 }
 
 export enum MessageType {

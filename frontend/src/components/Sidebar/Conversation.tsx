@@ -43,7 +43,11 @@ const Conversation = ({ conversation, lastIndex }: Props) => {
           }
         </div>
         <div className="flex justify-between items-center flex-1">
-          <p className="font-bold ml-1">{isGroup ? groupName : fullName}</p>
+          <p className="font-bold ml-1">
+            {isGroup
+              ? groupName + `(${conversation.members?.length}人)`
+              : fullName}
+          </p>
           {/*<RedDot>99+</RedDot>*/}
           {/*  todo: red dot*/}
         </div>
