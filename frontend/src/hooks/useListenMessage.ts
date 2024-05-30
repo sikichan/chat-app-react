@@ -9,7 +9,6 @@ import toast from "react-hot-toast"
 const useListenMessage = () => {
   const { socket } = useSocketContext()
   const { messages, setMessages, selectedConversation } = useConversation()
-  const isGroup = selectedConversation?.isGroup
   const { authUser } = useAuthContext()
   useEffect(() => {
     socket?.on("new-message-group", (newMessage: MessageModel) => {
@@ -35,7 +34,6 @@ const useListenMessage = () => {
       }
       if (selectedConversation) {
         if (
-          !isGroup &&
           [newMessage.senderId._id, newMessage.receiverId].includes(
             selectedConversation._id,
           )

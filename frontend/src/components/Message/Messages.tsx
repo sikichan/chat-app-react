@@ -1,5 +1,5 @@
 import useGetMessages from "@/hooks/useGetMessages.ts"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import Message from "@/components/Message/Message.tsx"
 import { request } from "@/fetch.ts"
 import toast from "react-hot-toast"
@@ -18,6 +18,7 @@ const Messages = () => {
   const { setMessages, selectedConversation } = useConversation()
   const scrollParentRef = useRef<HTMLDivElement>(null)
   const bottomMsg = messages[0]
+  const topMsg = messages[messages.length - 1]
   const [parentScrollTop, setParentScrollTop] = useState<number>(0)
   const handleLoadMore = async () => {
     if (!scrollParentRef.current) return
@@ -29,7 +30,9 @@ const Messages = () => {
           new Date(topMessage.createdAt).getTime(),
           false,
         )
-        if (hasMore) scrollParentRef.current.scrollTop = parentScrollTop
+        if (hasMore) {
+          scrollParentRef.current.scrollTop = parentScrollTop
+        }
       }
     }
   }
@@ -63,6 +66,13 @@ const Messages = () => {
     scrollParentRef.current.scrollTop = scrollParentRef.current.scrollHeight
     setParentScrollTop(scrollParentRef.current.scrollTop)
   }, [selectedConversation, bottomMsg])
+
+  useLayoutEffect(() => {
+    if (!scrollParentRef.current || !topMsg) return
+
+    scrollParentRef.current.scrollTop =
+      parentScrollTop + scrollParentRef.current.clientHeight - 30
+  }, [topMsg, scrollParentRef.current?.scrollHeight, parentScrollTop])
 
   useEffect(() => {
     socket?.on("withdraw-message", (deletedMessage: MessageModel) => {
