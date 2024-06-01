@@ -1,4 +1,4 @@
-# chap-app-react
+# chat-app-react
 
 ## 应用截图
 
